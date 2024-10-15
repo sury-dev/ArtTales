@@ -19,10 +19,12 @@ app.use(cors({
 //routes
 
 import userRouter from "./routes/user.routes.js"
+import artRouter from "./routes/artPost.routes.js"
 
 //routes declaration
 
 app.use("/api/users", userRouter)
+app.use("/api/art", artRouter)
 app.post("/", async (req, res)=>{
     res.status(200).send({message : "OK"});
 })

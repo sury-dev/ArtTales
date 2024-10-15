@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentUserPassword, getCurrentUser, updateAccountDetails, updateUserAvatar, updateCoverImage, getUserProfile } from "../controllers/user.controller.js";
+import { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentUserPassword, getCurrentUser, updateAccountDetails, updateUserAvatar, updateCoverImage, getUserProfile, createTalePost } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -33,5 +33,13 @@ router.route("/update-avatar").patch(verifyJWT, upload.single("avatar"), updateU
 router.route("/update-coverimage").patch(verifyJWT, upload.single("coverImage"), updateCoverImage)
 
 router.route("/profiles/:username").get(verifyJWT, getUserProfile)
+router.route("/create").post(
+    verifyJWT, // Ensure only authenticated users can create a post
+    upload.fields([
+      { name: "coverImage", maxCount: 1 }, // Handle cover image
+      { name: "slidesImages" }, // Handle multiple slide images
+    ]),
+    createTalePost
+);
 
 export default router;
