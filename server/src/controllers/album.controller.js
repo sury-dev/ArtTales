@@ -139,7 +139,16 @@ const getAlbum = asyncHandler(async (req, res) => {
                     },
                     {
                         $addFields: {
-                            likesCount: { $size: "$likes" } // Count likes for each artPost
+                            likesCount: { $size: "$likes" }, // Count likes for each artPost
+                            isLiked: {
+                                $cond: {
+                                    if: {
+                                        $in: [req?.user._id, "$likes.likedBy"]
+                                    },
+                                    then: true,
+                                    else: false
+                                }
+                            }
                         }
                     },
                     {
@@ -149,7 +158,8 @@ const getAlbum = asyncHandler(async (req, res) => {
                             title: 1,
                             description: 1,
                             likesCount: 1, // Only include necessary fields for artPosts
-                            view: 1
+                            view: 1,
+                            isLiked: 1
                         }
                     }
                 ]
@@ -173,13 +183,37 @@ const getAlbum = asyncHandler(async (req, res) => {
             }
         },
         {
+            $lookup: {
+                from: 'likes', // Collection for album likes
+                localField: '_id', // Album's ID
+                foreignField: 'album', // Likes referring to this album
+                as: 'likes' // Alias for likes
+            }
+        },
+        {
+            $addFields: {
+                likesCount: { $size: "$likes" }, // Count likes for each artPost
+                isLiked: {
+                    $cond: {
+                        if: {
+                            $in: [req?.user._id, "$likes.likedBy"]
+                        },
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        },
+        {
             $project: {
                 _id: 1,
                 title: 1,
                 description: 1,
                 thumbnail: 1,
                 artPosts: 1, // Include filtered artPosts data
-                owner: 1 // Include filtered owner data
+                owner: 1, // Include filtered owner data
+                likesCount: 1, // Include album likes count
+                isLiked: 1
             }
         }
     ]);
@@ -256,7 +290,16 @@ const getUsersAlbums = asyncHandler(async (req, res) => {
                     },
                     {
                         $addFields: {
-                            likesCount: { $size: "$likes" } // Count likes for each artPost
+                            likesCount: { $size: "$likes" }, // Count likes for each artPost
+                            isLiked: {
+                                $cond: {
+                                    if: {
+                                        $in: [req?.user._id, "$likes.likedBy"]
+                                    },
+                                    then: true,
+                                    else: false
+                                }
+                            }
                         }
                     },
                     {
@@ -266,7 +309,8 @@ const getUsersAlbums = asyncHandler(async (req, res) => {
                             title: 1,
                             description: 1,
                             likesCount: 1, // Only include necessary fields for artPosts
-                            view: 1
+                            view: 1,
+                            isLiked: 1
                         }
                     }
                 ]
@@ -299,7 +343,16 @@ const getUsersAlbums = asyncHandler(async (req, res) => {
         },
         {
             $addFields: {
-                likesCount: { $size: "$likes" } // Count likes for the album
+                likesCount: { $size: "$likes" }, // Count likes for the album
+                isLiked: {
+                    $cond: {
+                        if: {
+                            $in: [req.user?._id, "$likes.likedBy"]
+                        },
+                        then: true,
+                        else: false
+                    }
+                }
             }
         },
         {
@@ -310,7 +363,8 @@ const getUsersAlbums = asyncHandler(async (req, res) => {
                 thumbnail: 1,
                 artPosts: 1, // Include filtered artPosts data
                 owner: 1, // Include filtered owner data
-                likesCount: 1 // Include album likes count
+                likesCount: 1, // Include album likes count
+                isLiked: 1
             }
         }
     ]);

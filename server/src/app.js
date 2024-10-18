@@ -21,12 +21,14 @@ app.use(cors({
 import userRouter from "./routes/user.routes.js"
 import artRouter from "./routes/artPost.routes.js"
 import albumRouter from "./routes/album.routes.js"
+import likeRouter from "./routes/like.routes.js"
 
 //routes declaration
 
 app.use("/api/users", userRouter)
 app.use("/api/art", artRouter)
 app.use("/api/albums", albumRouter)
+app.use("/api/likes", likeRouter)
 app.post("/", async (req, res)=>{
     res.status(200).send({message : "OK"});
 })
