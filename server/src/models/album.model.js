@@ -2,13 +2,16 @@ import mongoose, { Schema } from "mongoose";
 
 const albumSchema = new Schema(
     {
-        name:{
+        title:{
             type : String,
             required : true
         },
         description:{
+            type : String
+        },
+        thumbnail : {
             type : String,
-            required : true
+            required : false
         },
         artPost : [{
             type : Schema.Types.ObjectId,

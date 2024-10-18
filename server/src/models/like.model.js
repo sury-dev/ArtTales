@@ -10,6 +10,10 @@ const likeSchema = new Schema(
             type : Schema.Types.ObjectId,
             ref : "TalePost"
         },
+        album : {
+            type : Schema.Types.ObjectId,
+            ref : "Album"
+        },
         comment : {
             type : Schema.Types.ObjectId,
             ref : "Comment"

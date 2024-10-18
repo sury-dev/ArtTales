@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {createArtPost, getProfileArtPosts  } from "../controllers/artPost.controller.js";
+import { createArtPost, getProfileArtPosts, getAllArtPosts, updateArtPost, deleteArtPost, togglePublishArtPost, incrementViewCount } from "../controllers/artPost.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -8,6 +8,11 @@ const router = Router();
 //Secured Routes
 router.route("/post").post( verifyJWT, upload.single("artFile"), createArtPost );
 router.route("/profile/:username/:artPost").get(verifyJWT, getProfileArtPosts);
+router.route("/get-all-posts").get(verifyJWT, getAllArtPosts);
+router.route("/update-art-post").patch(verifyJWT, updateArtPost);
+router.route("/update-publish-status").patch(verifyJWT, togglePublishArtPost);
+router.route("/delete-art-post").delete(verifyJWT, deleteArtPost);
+router.route("/increment-view-count").patch(verifyJWT, incrementViewCount);
 
 // router.route("/logout").post(verifyJWT ,logoutUser);
 // router.route("/refresh-token").post(refreshAccessToken);
