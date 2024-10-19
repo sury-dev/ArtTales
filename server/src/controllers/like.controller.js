@@ -70,13 +70,129 @@ const toggleAlbumLike = asyncHandler(async (req, res) => {
     }
 })
 
-const getLikedVideos = asyncHandler(async (req, res) => {
+const getLikedArtPosts = asyncHandler(async (req, res) => {
     //TODO: get all liked videos
+    const likedPosts = await Like.aggregate([
+        {
+            $match: {likedBy: req.user._id, artPost: { $exists: true }}
+        },
+        {
+            $lookup:{
+                from: "artposts",
+                localField: "artPost",
+                foreignField: "_id",
+                as: "artPost",
+                pipeline: [
+                    {
+                        $match: { isPublished: true }
+                    },
+                    {
+                        $lookup: {
+                            from: 'likes', // Collection for likes
+                            localField: '_id', // artPost's ID field
+                            foreignField: 'artPost', // Likes referring to this artPost
+                            as: 'likes' // Alias for likes
+                        }
+                    },
+                    {
+                        $addFields: {
+                            likesCount: { $size: "$likes" }, // Count likes for each artPost
+                            isLiked: {
+                                $cond: {
+                                    if: {
+                                        $in: [req?.user._id, "$likes.likedBy"]
+                                    },
+                                    then: true,
+                                    else: false
+                                }
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            artFile: 1,
+                            title: 1,
+                            description: 1,
+                            likesCount: 1, // Only include necessary fields for artPosts
+                            view: 1,
+                            isLiked: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $project: {
+                artPost: 1
+            }
+        }
+    ])
+
+    return res.status(200).json(new ApiResponse(200, likedPosts, "Liked artPosts retrieved successfully"));
 })
+
+const getLikedAlbums = asyncHandler(async (req, res) => {
+    const getLikedAlbums = await Like.aggregate([
+        {
+            $match: {likedBy: req.user._id, album: { $exists: true }}
+        },
+        {
+            $lookup:{
+                from: "albums",
+                localField: "album",
+                foreignField: "_id",
+                as: "album",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: 'likes', // Collection for likes
+                            localField: '_id', // album's ID field
+                            foreignField: 'album', // Likes referring to this album
+                            as: 'likes' // Alias for likes
+                        }
+                    },
+                    {
+                        $addFields: {
+                            likesCount: { $size: "$likes" }, // Count likes for each album
+                            isLiked: {
+                                $cond: {
+                                    if: {
+                                        $in: [req?.user._id, "$likes.likedBy"]
+                                    },
+                                    then: true,
+                                    else: false
+                                }
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            thumbnail: 1,
+                            title: 1,
+                            description: 1,
+                            likesCount: 1, // Only include necessary fields for albums
+                            isLiked: 1
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $project: {
+                album: 1
+            }
+        }
+    ])
+
+    return res.status(200).json(new ApiResponse(200, getLikedAlbums, "Liked albums retrieved successfully"));
+});
 
 export {
     toggleCommentLike,
     toggleAlbumLike,
     toggleArtPostLike,
-    getLikedVideos
+    getLikedArtPosts,
+    getLikedAlbums
 }
