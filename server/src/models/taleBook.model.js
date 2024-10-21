@@ -2,17 +2,20 @@ import mongoose, { Schema } from "mongoose";
 
 const taleBookSchema = new Schema(
     {
-        name:{
+        title:{
             type : String,
             required : true
         },
         description:{
-            type : String,
-            required : true
+            type : String
         },
-        talePost : [{
+        thumbnail : {
+            type : String,
+            required : false
+        },
+        artPost : [{
             type : Schema.Types.ObjectId,
-            ref : "TalePost"
+            ref : "ArtPost"
         }],
         owner : {
             type : Schema.Types.ObjectId,
