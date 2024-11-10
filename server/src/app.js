@@ -32,7 +32,7 @@ app.use("/api/albums", albumRouter)
 app.use("/api/likes", likeRouter)
 app.use("/api/comments", commentRouter)
 app.use("/api/talebooks", taleBookRouter)
-app.post("/", async (req, res)=>{
+app.get("/health", async (req, res)=>{
     res.status(200).send({message : "OK"});
 })
 

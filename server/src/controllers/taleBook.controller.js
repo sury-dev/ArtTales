@@ -5,7 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 import { User } from '../models/user.model.js';
 import { mongoose } from 'mongoose';
-import { Talebook } from '../models/taleBook.model.js';
+import { TaleBook } from '../models/taleBook.model.js';
 
 const createTalebook = asyncHandler(async (req, res) => {
     try {
