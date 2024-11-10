@@ -1,7 +1,8 @@
 import React from 'react'
+import './Container.css'
 
 function Container({children}) {
-    return <div className='w-full max-w-7xl mx-auto h-full'>{children}</div>
+    return <div className='containerBox'>{children}</div>
 }
 
 export default Container

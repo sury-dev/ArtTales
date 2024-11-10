@@ -1,0 +1,34 @@
+.navbar{
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    width: 100%;
+    padding: 0px 100px;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.authBtns{
+    font-size: 1.2rem;
+    padding: 5px 20px;
+    background: transparent;
+    border-radius: 10px;
+    color: white;
+    transition: 0.2s ease;
+}
+
+.authBtns:hover{
+    background: linear-gradient(90deg, #D400FF, #8800FF);
+    color: white;
+    border: none;
+    transform: scale(1.1);
+}
+
+.navbar .active{
+    background: linear-gradient(90deg, #D400FF, #8800FF);
+    color: white;
+    border: none;
+    transform: scale(1.1);
+}

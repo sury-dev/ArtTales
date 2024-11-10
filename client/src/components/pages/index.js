@@ -1,6 +1,5 @@
 import AddPost from "./AddPost";
 import Explore from "./Explore";
-import Login from "./Login";
-import Signup from "./Signup";
+import Authenticate from "./Authenticate";
 
-export { AddPost, Explore, Login, Signup };
+export { AddPost, Explore, Authenticate};

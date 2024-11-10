@@ -1,0 +1,4 @@
+.containerBox{
+    width: calc(100vw - 100px);
+    background-color: blue;
+}

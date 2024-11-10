@@ -1,0 +1,43 @@
+.signupLogin{
+    width: 400px;
+    margin: 0 auto;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.signButton{
+    background: linear-gradient(45deg, #D400FF, #8800FF);
+    font-size: 1.5rem;
+    padding: 5px 60px;
+    border-radius: 15px;
+    color: white;
+    transition: 0.2s ease-in-out;
+}
+
+.signButton:hover{
+    transform: scale(1.1);
+}
+.signButton:active{
+    transform: scale(1);
+}
+
+.textArea{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    background: transparent;
+    border: 2px solid white;
+    border-radius: 20px;
+    color: white;
+}
+.textArea:focus{
+    border: 2px solid #D400FF;
+    outline: none;
+}

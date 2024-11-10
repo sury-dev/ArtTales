@@ -1,9 +1,10 @@
 import React from 'react'
+import './Logo.css'
 
 function Logo({width = "100px"}) {
     return (
         <div>
-            <h1 className='text-purple-800 text-4xl'>ART TALES</h1>
+            <h1 className='logo'>ART TALES</h1>
         </div>
     )
 }

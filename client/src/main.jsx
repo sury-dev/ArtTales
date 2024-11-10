@@ -5,8 +5,8 @@ import App from './App.jsx'
 import store from './app/store/store.js'
 import { Provider } from 'react-redux'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Explore, Login, AddPost, Signup } from './components/pages/index.js'
-import { Protected } from './components/index.js'
+import { Explore, Authenticate, AddPost } from './components/pages/index.js'
+import { Protected, SignupComponent, LoginComponent } from './components/index.js'
 
 const router = createBrowserRouter([
   {
@@ -18,8 +18,18 @@ const router = createBrowserRouter([
         element: <Explore />
       },
       {
-        path: '/sign',
-        element: <Protected authentication={false}><Login /></Protected>
+        path: '/auth',
+        element: <Protected authentication={false}><Authenticate /></Protected>,
+        children: [
+          {
+            path: 'login',
+            element: <LoginComponent />
+          },
+          {
+            path: 'signup',
+            element: <SignupComponent />
+          }
+        ]
       },
       {
         path: '/add-post',

@@ -1,0 +1,30 @@
+.inputBtn{
+    width: 100%;
+    border: white 2px solid;
+    border-radius: 20px;
+    background-color: transparent;
+    color: white;
+    font-size: 1rem;
+    height: 50px;
+    text-align: center;
+    outline: none;
+}
+.inputBtn::placeholder{
+    color: rgba(255, 255, 255, 0.74);
+}
+.inputBtn:focus{
+    border: 2px solid #D400FF; /* Remove border-color */
+    outline: none;
+}
+.inputContainer{
+    position: relative;
+    width: 100%;
+}
+
+.inputContainer>img{
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    height: 30px;
+}

@@ -1,23 +1,26 @@
-import React, {useId} from 'react'
+import React, { useId } from 'react'
+import './Input.css'
 
 const Input = React.forwardRef((
     {
         label,
+        img,
         type = 'text',
         className = '',
         ...props
     }, ref
-)=>{
+) => {
     const id = useId()
     return (
-        <div>
-            {label && <label htmlFor={id}>{label}</label>}
+        <div className='inputContainer'>
             <input
-                id={id}
-                type={type}
-                className={`px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent ${className}`}
-                ref={ref}
-                {...props} />
+            id={id}
+            type={type}
+            className={`inputBtn ${className}`}
+            ref={ref}
+            {...props}
+        />
+        {img && <img src={img} alt='icon' className='inputIcon' />}
         </div>
     )
 })

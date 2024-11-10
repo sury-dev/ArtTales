@@ -30,7 +30,7 @@ function App() {
   return !loading ? (
     <>
       <Header />
-      <main>
+      <main className='main'>
         <Outlet />
       </main>
       <Footer />

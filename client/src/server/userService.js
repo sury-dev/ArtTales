@@ -35,6 +35,7 @@ export class UserService {
             }
         } catch (error) {
             console.log("Server :: AuthService :: createUser :: error :: ", error);
+            return error.response;
         }
     }
 
@@ -46,6 +47,7 @@ export class UserService {
             return userData;
         } catch (error) {
             console.log("Server :: AuthService :: loginUser :: error :: ", error);
+            return error;
         }
     }
 

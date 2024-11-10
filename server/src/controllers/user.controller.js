@@ -61,6 +61,12 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(409, "Username already exists")
     }
 
+    const existingPhoneNumber = await User.findOne({ phoneNumber })
+
+    if (existingPhoneNumber) {
+        throw new ApiError(409, "PhoneNumber already exists")
+    }
+
     //const avatarLocalPath = req.files?.avatar[0]?.path; //since we already used multer 
     //const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
