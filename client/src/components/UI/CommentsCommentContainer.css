@@ -1,0 +1,23 @@
+.comment-box{
+    margin: 0;
+}
+.show-hide-comments-comment{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+.show-hide-comments-comment>button{
+    background-color: rgb(22, 22, 22);
+    color: white;
+    padding: 5px 20px;
+    border-radius: 10px;
+    transition: all 0.15s ease-in;
+}
+.show-hide-comments-comment>button:hover{
+    background-color: white;
+    color: black;
+}
+.show-hide-comments-comment>button:active{
+    transform: scale(0.95);
+}

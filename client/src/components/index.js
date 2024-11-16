@@ -12,6 +12,15 @@ import SignupComponent from "./UI/SignupComponent";
 import RTE from "./Utility/RTE";
 import ArtPostForm from "./Post/ArtPostForm";
 import Protected from "./Auth/authLayout";
+import ArtPostCards from "./UI/ArtPostCards";
+import ArtPostModal from "./UI/ArtPostModal";
+import ProfileIcon from "./UI/ProfileIcon";
+import ArtCommentContainer from "./UI/ArtCommentContainer";
+import ArtCommentButton from "./UI/ArtCommentButton";
+import LikeButton from "./UI/LikeButton";
+import ViewButton from "./UI/ViewButton.jsx";
+import CommentButton from "./UI/CommentButton.jsx";
+import CommentsCommentContainer from './UI/CommentsCommentContainer.jsx'
 
 export {
     Header,
@@ -27,5 +36,14 @@ export {
     SignupComponent,
     RTE,
     ArtPostForm,
-    Protected
+    Protected,
+    ArtPostCards,
+    ArtPostModal,
+    ProfileIcon,
+    ArtCommentContainer,
+    ArtCommentButton,
+    LikeButton,
+    CommentsCommentContainer,
+    ViewButton,
+    CommentButton
 };

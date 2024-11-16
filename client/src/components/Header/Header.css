@@ -1,5 +1,6 @@
 .navbar{
-    position: absolute;
+    position: fixed;
+    top: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -8,6 +9,8 @@
     padding: 0px 100px;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1;
+    border-bottom: 2px solid white;
+    backdrop-filter: blur(10px);
 }
 
 .authBtns{
@@ -27,6 +30,22 @@
 }
 
 .navbar .active{
+    background: linear-gradient(90deg, #D400FF, #8800FF);
+    color: white;
+    border: none;
+    transform: scale(1.1);
+}
+
+.navBtns{
+    font-size: 1.2rem;
+    padding: 5px 20px;
+    background: transparent;
+    border-radius: 10px;
+    color: white;
+    transition: 0.3s ease;
+}
+
+.navBtns:hover{
     background: linear-gradient(90deg, #D400FF, #8800FF);
     color: white;
     border: none;

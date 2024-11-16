@@ -36,8 +36,28 @@ const toggleArtPostLike = asyncHandler(async (req, res) => {
 })
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
-    const {commentId} = req.params
-    //TODO: toggle like on comment
+    try {
+        const {commentId} = req.params
+        if(!isValidObjectId(commentId)){
+            throw new ApiError(400, "Invalid Comment Id");
+        }
+
+        const commentLike = await Like.findOne({comment: commentId, likedBy: req.user._id});
+
+        if(commentLike){
+            const deletedLike = await Like.findByIdAndDelete(commentLike._id);
+        }else{
+            const addedLike = new Like({
+                comment: commentId,
+                likedBy: req.user._id
+            })
+            await addedLike.save();
+        }
+
+        return res.status(200).json(new ApiResponse(200, {}, "Comment like toggled successfully"));
+    } catch (error) {
+        throw new ApiError(400, "Toggle Comment Like Error :: ", error)
+    }
 
 })
 

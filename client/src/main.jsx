@@ -6,7 +6,7 @@ import store from './app/store/store.js'
 import { Provider } from 'react-redux'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Explore, Authenticate, AddPost } from './components/pages/index.js'
-import { Protected, SignupComponent, LoginComponent } from './components/index.js'
+import { Protected, SignupComponent, LoginComponent, ArtPostModal } from './components/index.js'
 
 const router = createBrowserRouter([
   {
@@ -15,7 +15,13 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Explore />
+        element: <Protected authentication><Explore /></Protected>,
+        children:[
+          {
+            path: 'artpost/:id',
+            element: <ArtPostModal />
+          }
+        ]
       },
       {
         path: '/auth',

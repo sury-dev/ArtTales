@@ -1,0 +1,8 @@
+.commentInp{
+    background: none;
+    outline: none;
+    color: white;
+    font-weight: 350;
+    flex: 1;
+    border-bottom: 2px solid white;
+}

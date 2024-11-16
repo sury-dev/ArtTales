@@ -12,7 +12,7 @@ function Authenticate() {
                 <p>ART</p>
                 <p>TALES</p>
             </div>
-            <img src="https://res.cloudinary.com/suryansh-cloud/image/upload/v1731262262/qw32yei7vymcmnxaqa3w.png" className='character' alt="" />
+            <img src="https://res.cloudinary.com/suryansh-cloud/image/upload/v1731432306/qozqxa1qkynmlzoryqke.png" className='character' alt="" />
             <div className="form">
                 <Outlet />
             </div>

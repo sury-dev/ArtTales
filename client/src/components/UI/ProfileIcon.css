@@ -1,0 +1,16 @@
+.profile-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 1px solid white; */
+    border-radius: 33%;
+    overflow: hidden;
+    position: relative;
+    z-index: 0;
+    padding: 2px;
+    border: 2px solid white;
+}
+.profile-container>img{
+    object-fit: cover;
+    border-radius: calc(33% - 2px);
+}

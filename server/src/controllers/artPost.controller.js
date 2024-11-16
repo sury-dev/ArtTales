@@ -50,57 +50,229 @@ const createArtPost = asyncHandler(async (req, res) => {
 });
 
 const getProfileArtPosts = asyncHandler(async (req, res) => {
-    const {username, artPost} = req.params;
+    const {id} = req.params;
 
-    if(username?.trim() == "" || artPost?.trim() == ""){
-        console.log(username," ", artPost);
-        throw new ApiError(404, "Page not Found here");
+    if (!mongoose.isValidObjectId(id)){
+        throw new ApiError(400, "Not a valid ID");
     }
 
-    const user = await User.findOne({username});
-
-    if(!user){
-        throw new ApiError(404, "User Does not exist")
-    }
-
-    const artPosts = await ArtPost.find({owner: user._id, title: artPost});
-
-    if(artPosts.length === 0 || artPosts?.isPublished === false){
-        throw new ApiError(404, "Art Post not found");
-    }
+    const artPost = await ArtPost.aggregate([
+        { 
+            $match: { 
+                _id: new mongoose.Types.ObjectId(id), 
+                isPublished: true 
+            } 
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner",
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "follows",  // lowercase and plural
+                            localField: "_id",
+                            foreignField: "profile",
+                            as: "followers"
+                        }
+                    },
+                    {
+                        $addFields: {
+                            followersCount: {
+                                $size: "$followers"
+                            },
+                            isFollowed: {
+                                $cond: {
+                                    if: {
+                                        $in: [req.user?._id, "$followers.follower"]
+                                    },
+                                    then: true,
+                                    else: false
+                                }
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            username: 1,
+                            avatar: 1,
+                            firstName: 1,
+                            lastName: 1,
+                            followersCount: 1,
+                            isFollowed: 1 // Only include necessary fields for owner
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $lookup: {
+                from: 'likes', // Collection for likes
+                localField: '_id', // artPost's ID field
+                foreignField: 'artPost', // Likes referring to this artPost
+                as: 'likes' // Alias for likes
+            }
+        },
+        {
+            $addFields: {
+                likesCount: { $size: "$likes" }, // Count likes for each artPost
+                isLiked: {
+                    $cond: {
+                        if: {
+                            $in: [req?.user._id, "$likes.likedBy"]
+                        },
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        },
+        {
+            $lookup: {
+                from: 'follows', // Followers collection
+                localField: 'owner', // artPost's owner (profile being followed)
+                foreignField: 'profile', // profile being followed
+                as: 'followers' // Alias for followers
+            }
+        },
+        {
+            $addFields: {
+                followersCount: { $size: "$followers" }, // Count followers for the owner
+                isFollowed: {
+                    $cond: {
+                        if: {
+                            $in: [req?.user._id, "$followers.follower"]
+                        },
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 1,
+                artFile: 1,
+                title: 1,
+                description: 1,
+                likesCount: 1,
+                view: 1,
+                isLiked: 1,
+                followersCount: 1,
+                isFollowed: 1,
+                owner: { $arrayElemAt: ["$owner", 0] }
+            }
+        }
+    ]);
+    
 
     return res
     .status(200)
     .json(
-        new ApiResponse(200, artPosts, "Art Post Fetched successfully")
+        new ApiResponse(200, artPost[0], "Art Post Fetched successfully")
     )
 });
 
 const getAllArtPosts = asyncHandler(async (req, res) => {
     const { page = 1, limit = 10, query} = req.query
-    const allArtPosts = await ArtPost.find({
-        isPublished: true,
-        $or: [
-            {
-                title: {
-                    $regex: query || "",
-                    $options: "i"
-                }
-            },
-            {
-                description: {
-                    $regex: query || "",
-                    $options: "i"
-                }
+    // const allArtPosts = await ArtPost.find({
+    //     isPublished: true,
+    //     $or: [
+    //         {
+    //             title: {
+    //                 $regex: query || "",
+    //                 $options: "i"
+    //             }
+    //         },
+    //         {
+    //             description: {
+    //                 $regex: query || "",
+    //                 $options: "i"
+    //             }
+    //         }
+    //     ]
+    // })
+    // .sort({
+    //     createdAt: -1
+    // })
+    // .limit(limit)
+    // .skip((page - 1) * limit)
+    // .exec();
+
+    const allArtPosts = await ArtPost.aggregate([
+        // Match only published posts
+        {
+            $match: {
+                isPublished: true,
+                $or: [
+                    { title: { $regex: query || "", $options: "i" } },
+                    { description: { $regex: query || "", $options: "i" } }
+                ]
             }
-        ]
-    })
-    .sort({
-        createdAt: -1
-    })
-    .limit(limit)
-    .skip((page - 1) * limit)
-    .exec();
+        },
+        {
+            $lookup: {
+                from: "likes",
+                localField: "_id",
+                foreignField: "artPost",
+                as: "likes",
+            },
+        },
+        {
+            $addFields: {
+                likesCount: { $size: "$likes" },
+                isLiked: {
+                    $cond: {
+                        if: { $in: [req?.user._id, "$likes.likedBy"] },
+                        then: true,
+                        else: false,
+                    },
+                },
+                //owner: { $arrayElemAt: ["$owner", 0] }, // Flatten owner array
+            },
+        },
+        {
+            $lookup: {
+                from: "comments",
+                localField: "_id",
+                foreignField: "artPost",
+                as: "comments",
+            },
+        },
+        {
+            $addFields: {
+                commentsCount: { $size: "$comments" },
+                isCommented: {
+                    $cond: {
+                        if: { $in: [req?.user._id, "$comments.owner"] },
+                        then: true,
+                        else: false,
+                    },
+                },
+                //owner: { $arrayElemAt: ["$owner", 0] }, // Flatten owner array
+            },
+        },
+        {
+            $sort: { createdAt: -1 }
+        },
+        {
+            $project: {
+                _id: 1,
+                artFile: 1,
+                title: 1,
+                description: 1,
+                view : 1,
+                owner : 1,
+                likesCount: 1,
+                isLiked: 1,
+                commentsCount: 1,
+                isCommented : 1
+            },
+        },
+    ]);
 
     return res
     .status(200)
@@ -185,13 +357,13 @@ const togglePublishArtPost = asyncHandler(async (req, res) => {
 });
 
 const incrementViewCount = asyncHandler(async (req, res) => {
-    const { _id } = req.body;
+    const { id } = req.params;
 
-    if (!mongoose.isValidObjectId(_id)){
+    if (!mongoose.isValidObjectId(id)){
         throw new ApiError(400, "Invalid Art Post Id");
     }
 
-    const artPostDoc = await ArtPost.findByIdAndUpdate(_id, {$inc: {view: 1}}, {new: true});
+    const artPostDoc = await ArtPost.findByIdAndUpdate(id, {$inc: {view: 1}}, {new: true});
 
     return res
     .status(201)

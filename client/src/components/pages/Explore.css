@@ -1,0 +1,10 @@
+.explore{
+    height: max-content;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    column-gap: 20px;
+    row-gap: 40px;  /* Ensures consistent gap between both rows and columns */
+    justify-content: center;  /* Centers content horizontally */
+    align-items: center;  /* Centers content vertically within each cell */
+    padding: 100px;
+}

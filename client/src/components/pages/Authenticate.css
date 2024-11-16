@@ -39,7 +39,7 @@
     border: 2px solid white;
     border-right: none;
     border-radius: 40px 0 0 40px;
-    animation: slideInRight 1s ease;
+    animation: slideInRight 2s ease;
     z-index: 3;
 }
 
@@ -59,7 +59,7 @@
     color: white;
     position: absolute;
     left: -100px;
-    animation: slideInLeft 1s ease forwards;
+    animation: slideInLeft 2s ease forwards;
 }
 
 @keyframes slideInLeft { 
@@ -67,7 +67,7 @@
         left: -100px; /* Start off-screen */
     }
     to {
-        left: 100px; /* End position */
+        left: 70px; /* End position */
     }
 }
 
@@ -84,8 +84,8 @@
     margin-top: 150px;
     z-index: 2;
     position: absolute;
-    bottom: -17%; /* Initial position off-screen */
-    animation: slideInBottom 1s ease forwards; /* Apply the animation */
+    bottom: -17%; 
+    animation: slideInBottom 2s ease forwards;
 }
 
 @keyframes slideInBottom { 

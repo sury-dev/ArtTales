@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import userService from './server/userService'
 import { login, logout } from './app/slices/authSlice'
 import { Header, Footer } from './components'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 function App() {
 
@@ -15,7 +15,7 @@ function App() {
     userService.getCurrentUser()
       .then((userData) => {
         if (userData && userData.status === 200) {
-          dispatch(login({ userData: userData.data }))
+          dispatch(login({ userData: userData.data.data }))
         }
         else{
           dispatch(logout())

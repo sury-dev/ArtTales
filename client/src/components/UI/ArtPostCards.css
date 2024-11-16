@@ -1,0 +1,92 @@
+.card{
+    height: 300px;
+    width: 300px;
+    position: relative;
+    border-radius: 25px;
+    overflow: hidden;
+}
+.card > img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+.card:hover{
+    cursor: pointer;
+}
+.card:hover .overlay{
+    background-color: rgba(0, 0, 0, 0.7);
+}
+.overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    transition: 0.3s ease;
+}
+.card-content{
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    padding: 5px 20px;
+    position: absolute;
+    bottom: 0;
+    transform: translateY(100%);
+}
+.card-content>h2{
+    font-size: 1.5rem;
+    color: white;
+    text-align: center;
+}
+.card-content>p{
+    font-size: 1rem;
+    color: white;
+    max-height: 50px;
+    overflow: scroll;
+}
+.card-content>p::-webkit-scrollbar{
+    display: none;
+}
+.card-content>div{
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: flex-end;
+}
+.viewContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+.viewContainer>img{
+    height: 30px;
+}
+.card:hover .card-content {
+    animation: slideUp 0.5s ease forwards;
+}
+
+.card .card-content {
+    animation: slideDown 0.5s ease forwards;
+}
+
+@keyframes slideUp {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+@keyframes slideDown {
+    0% {
+        transform: translateY(0%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}

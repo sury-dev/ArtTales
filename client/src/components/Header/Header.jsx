@@ -14,7 +14,10 @@ function Header() {
     ]
 
     const navItemsMid = [
-        { name: 'Explore', path: '/', active: authStatus }
+        { name: 'Explore', path: '/', active: authStatus },
+        { name: 'Search', path: '/1', active: authStatus },
+        { name: 'Messages', path: '/2', active: authStatus },
+        { name: 'Notifications', path: '/3', active: authStatus }
     ]
 
     return (
@@ -30,8 +33,7 @@ function Header() {
                         <li key={item.name} className='inline-block mx-2'>
                             <NavLink 
                                 to={item.path} 
-                                className='navBtns'
-                                activeClassName='active'  // Add active class to the current route
+                                className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
                             >
                                 {item.name}
                             </NavLink>
@@ -45,8 +47,7 @@ function Header() {
                         <li key={item.name} className='inline-block mx-2'>
                             <NavLink 
                                 to={item.path} 
-                                className='authBtns'
-                                activeClassName='active'
+                                className={({ isActive }) => (isActive ? 'authBtns active' : 'navBtns')}
                             >
                                 {item.name}
                             </NavLink>

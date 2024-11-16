@@ -3,10 +3,13 @@ import { Comment } from "../models/comment.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { User } from "../models/user.model.js";
 
 const getArtPostComments = asyncHandler(async (req, res) => {
     const { artPostId } = req.params;
-    const { page = 1, limit = 10 } = req.query;
+    let { page = 1, limit = 10 } = req.query;
+    limit = parseInt(req.query.limit, 10);  // Parse the limit as an integer
+    page = parseInt(req.query.page, 10);
 
     try {
         if (!isValidObjectId(artPostId)) {
@@ -37,18 +40,66 @@ const getArtPostComments = asyncHandler(async (req, res) => {
                 },
             },
             {
-                $project: {
-                    content: 1,
-                    owner: { $arrayElemAt: ["$owner", 0] },
-                    createdAt: 1,
+                $lookup: {
+                    from: "likes",
+                    localField: "_id",
+                    foreignField: "comment",
+                    as: "likes",
                 },
             },
-        ])
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .exec();
+            {
+                $addFields: {
+                    likesCount: { $size: "$likes" },
+                    isLiked: {
+                        $cond: {
+                            if: { $in: [req?.user._id, "$likes.likedBy"] },
+                            then: true,
+                            else: false,
+                        },
+                    },
+                    owner: { $arrayElemAt: ["$owner", 0] }, // Flatten owner array
+                },
+            },
+            {
+                $project: {
+                    content: 1,
+                    owner: 1,
+                    createdAt: 1,
+                    likesCount: 1,
+                    isLiked: 1,
+                },
+            },
+            {
+                $sort: { createdAt: -1 },
+            },
+            {
+                $facet: {
+                    totalCommentCount: [{ $count: "count" }],
+                    paginatedResults: [
+                        { $skip: (page - 1) * limit },
+                        { $limit: limit },
+                    ],
+                },
+            },
+            {
+                $addFields: {
+                    totalCommentCount: { $arrayElemAt: ["$totalCommentCount.count", 0] },
+                },
+            },
+            {
+                $project: {
+                    paginatedResults: 1,
+                    totalCommentCount: { $ifNull: ["$totalCommentCount", 0] },
+                },
+            },
+        ]);
+        
+        const results = {
+            comments: comments[0].paginatedResults,
+            totalCommentCount: comments[0].totalCommentCount,
+        };        
 
-        return res.status(200).json(new ApiResponse(200, comments, "Art Post Comments retrieved successfully"));
+        return res.status(200).json(new ApiResponse(200, results, "Art Post Comments retrieved successfully"));
     } catch (error) {
         throw new ApiError(500, error.message);
     }
@@ -87,10 +138,36 @@ const getCommentComments = asyncHandler(async (req, res) => {
                 },
             },
             {
+                $lookup: {
+                    from: "likes",
+                    localField: "_id",
+                    foreignField: "comment",
+                    as: "likes",
+                },
+            },
+            {
+                $addFields: {
+                    likesCount: { $size: "$likes" },
+                    isLiked: {
+                        $cond: {
+                            if: { $in: [req?.user._id, "$likes.likedBy"] },
+                            then: true,
+                            else: false,
+                        },
+                    },
+                    //owner: { $arrayElemAt: ["$owner", 0] }, // Flatten owner array
+                },
+            },
+            {
+                $sort: { createdAt: -1 }
+            },
+            {
                 $project: {
                     content: 1,
                     owner: { $arrayElemAt: ["$owner", 0] },
                     createdAt: 1,
+                    likesCount: 1,
+                    isLiked: 1
                 },
             },
         ])
@@ -121,19 +198,25 @@ const addCommentToArtPost = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Comment content is required");
         }
 
+        const userData = await User.findById(req.user._id).select("username avatar");
+
         const comment = new Comment({
             content,
             artPost: artPostId,
-            owner: req.user._id,
+            owner: req.user._id
         });
 
-        const commentDoc = await comment.save();
+
+        let commentDoc = await comment.save();
 
         if (!commentDoc) {
             throw new ApiError(400, "Failed to add comment");
         }
 
-        return res.status(201).json(new ApiResponse(201, commentDoc, "Comment added successfully"));
+        commentDoc.owner = userData;
+        commentDoc.owner._id = req.user._id;
+
+        return res.status(201).json(new ApiResponse(201, {comments : commentDoc}, "Comment added successfully"));
     } catch (error) {
         throw new ApiError(500, error.message);
     }
@@ -164,7 +247,65 @@ const addCommentToComment = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Failed to add comment");
         }
 
-        return res.status(201).json(new ApiResponse(201, commentDoc, "Comment added successfully"));
+        const responseData = await Comment.aggregate([
+            {
+                $match: {_id: new mongoose.Types.ObjectId(commentDoc._id)}
+            },
+            {
+                $lookup: {
+                    from: 'likes',
+                    localField: '_id',
+                    foreignField: 'comment',
+                    as: 'likes'
+                }
+            },
+            {
+                $addFields: {
+                    likesCount: { $size: "$likes" },
+                    isLiked: {
+                        $cond: {
+                            if: {
+                                $in: [req?.user._id, "$likes.likedBy"]
+                            },
+                            then: true,
+                            else: false
+                        }
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "owner",
+                    foreignField: "_id",
+                    as: "owner",
+                    pipeline: [
+                        {
+                            $project: {
+                                _id: 1,
+                                username: 1,
+                                avatar: 1,
+                            },
+                        },
+                    ],
+                },
+            },
+            {
+                $sort: { createdAt: -1 }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    content: 1,
+                    createdAt: 1,
+                    likesCount: 1,
+                    isLiked: 1,
+                    owner: { $arrayElemAt: ["$owner", 0] }
+                }
+            }
+        ])
+
+        return res.status(201).json(new ApiResponse(201, responseData, "Comment added successfully"));
     } catch (error) {
         throw new ApiError(500, error.message);
     }

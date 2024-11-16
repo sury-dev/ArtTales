@@ -1,0 +1,17 @@
+.likes{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 5px;
+}
+.likes:hover{
+    cursor: pointer;
+}
+.likes>img{
+    height: 30px;
+}
+.likes>p{
+    font-size: 1.5rem;
+    line-height: 1.8rem;
+    font-weight: 200;
+}

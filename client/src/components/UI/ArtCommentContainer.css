@@ -1,0 +1,121 @@
+.art-comments-wrapper{
+    width: 100%;
+    height: 100%;
+}
+
+.art-comments-wrapper > p{
+    color: white;
+    font-size: 1.5rem;
+    line-height: 1.3rem;
+    font-weight: 300;
+    margin-bottom: 15px;
+}
+.comment-container{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    /* border: 2px solid white; */
+    margin-bottom: 15px;
+    gap: 10px;
+}
+.comment-submit{
+    border: 2px solid white;
+    color: white;
+    background-color: transparent;
+    transition: all 0.15s ease-in;
+    padding: 5px 15px;
+    border-radius: 10px;
+}
+.comment-submit:hover{
+    background-color: white;
+    color: black;
+}
+.comment-submit:active{
+    transform: scale(0.95);
+}
+.comments{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding: 10px;
+}
+.comment-box{
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, transparent 80px);
+    /* border-left: 1px solid white; */
+    color: white;
+    padding: 10px;
+    padding-right: 0;
+    border-radius: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 15px;
+    transition: all 0.3s ease-in;
+}
+.comment-content{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+.comment-content > p{
+    white-space: pre-line;
+}
+.comment-content-username{
+    font-weight: 600;
+    font-size: 1.1rem;
+    line-height: 1.1rem;
+    margin-bottom: 5px;
+}
+.comment-content-comment{
+    font-weight: 300;
+    height: 2rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease-in;
+    width: 100%;
+}
+.comment-profile-icon{
+    min-width: 50px;
+    min-height: 50px;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    font-size: 1.5rem;
+    overflow: scroll;
+}
+.show-hide-art-comment{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.show-hide-art-comment>button{
+    background-color: rgb(22, 22, 22);
+    color: white;
+    padding: 5px 20px;
+    border-radius: 10px;
+    transition: all 0.15s ease-in;
+}
+.show-hide-art-comment>button:hover{
+    background-color: white;
+    color: black;
+}
+.show-hide-art-comment>button:active{
+    transform: scale(0.95);
+}
+.comment-first-line{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    gap: 10px;
+}
