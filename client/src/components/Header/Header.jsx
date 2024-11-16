@@ -3,6 +3,7 @@ import { Logo, LogoutBtn, Container } from '../'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import './Header.css'
+import CreatePostBtn from './CreatePostBtn'
 
 function Header() {
 
@@ -54,7 +55,10 @@ function Header() {
                         </li>
                     )
                 ))}
-                <li>
+                <li  className='inline-block mx-2'>
+                    {authStatus && <CreatePostBtn />}
+                </li>
+                <li  className='inline-block mx-2'>
                     {authStatus && <LogoutBtn />}
                 </li>
             </ul>

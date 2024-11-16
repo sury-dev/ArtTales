@@ -13,6 +13,13 @@
     backdrop-filter: blur(10px);
 }
 
+.navbar > ul{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+}
+
 .authBtns{
     font-size: 1.2rem;
     padding: 5px 20px;
