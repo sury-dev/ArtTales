@@ -24,7 +24,7 @@ function LogoutBtn() {
     return (
         <button 
             onClick={handleLogout} 
-            className='bg-black text-white px-5 py-2 rounded-xl hover:bg-white hover:text-black duration-200 inline-block'
+            className='bg-transparent text-white px-5 py-2 rounded-xl hover:bg-white hover:text-black duration-200 inline-block'
         >
             Logout
         </button>

@@ -1,30 +1,9 @@
-.createPostBtn {
+.header-profile-wrapper{
     position: relative;
-}
-
-.createPostBtn > .btn {
-    position: relative;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    background: black;
-    color: white;
-    border: 2px solid white;
-    border-radius: 15px;
     cursor: pointer;
-    transition: 0.3s ease;
-    padding: 5px 10px;
-    font-size: 2.5rem;
-    width: 40px;
-    height: 40px;
 }
 
-.createPostBtn > .btn:hover {
-    border: none;
-    background: linear-gradient(90deg, #D400FF, #8800FF);
-}
-
-.dropdown {
+.header-profile-dropdown {
     position: absolute;
     top: calc(100% + 20px);
     border: 2px solid white;
@@ -47,7 +26,7 @@
     border-radius: 15px;
 }
 
-.dropdown-item {
+.header-profile-dropdown-item {
     padding: 10px 20px;
     color: white;
     background: transparent;
@@ -58,7 +37,7 @@
     border-radius: 10px;
 }
 
-.dropdown-item:hover {
+.header-profile-dropdown-item:hover {
     background-color: white;
     color: black;
 }
