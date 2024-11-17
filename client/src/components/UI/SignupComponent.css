@@ -36,6 +36,7 @@
     border: 2px solid white;
     border-radius: 20px;
     color: white;
+    padding: 10px;
 }
 .textArea:focus{
     border: 2px solid #D400FF;

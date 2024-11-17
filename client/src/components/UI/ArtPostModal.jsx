@@ -82,7 +82,7 @@ function ArtPostModal() {
     return (
         <div className="artpost-modal-overlay" onClick={closeModal}>
             <div className="artpost-modal" onClick={(e) => e.stopPropagation()}>
-                <button className="close-button text-white" onClick={closeModal}>X</button>
+                <button className="close-button text-white bg-black" onClick={closeModal}>X</button>
                 
                 <div className="image-container">
                     <img src={postData.artFile} alt={postData.title} />

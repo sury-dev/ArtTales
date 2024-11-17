@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './CreatePostBtn.css';
+import { useNavigate } from 'react-router-dom';
 
 function CreatePostBtn() {
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [btnRotateStatus, setBtnRotateStatus] = useState('0deg');
     const btnRef = useRef(null);
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setDropdownVisible((prevState) => !prevState);
@@ -17,6 +19,10 @@ function CreatePostBtn() {
             setBtnRotateStatus('0deg');
         }
     };
+
+    const handleAddArtPostClick = () => {
+        navigate('/add-art-post');
+    }
 
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -36,7 +42,7 @@ function CreatePostBtn() {
             </button>
             {dropdownVisible && (
                 <div className="dropdown">
-                    <button className="dropdown-item">Post an Art</button>
+                    <button className="dropdown-item" onClick={handleAddArtPostClick}>Post an Art</button>
                     <button className="dropdown-item">Post a Tale</button>
                 </div>
             )}

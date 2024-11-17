@@ -5,7 +5,7 @@ import App from './App.jsx'
 import store from './app/store/store.js'
 import { Provider } from 'react-redux'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { Explore, Authenticate, AddPost } from './components/pages/index.js'
+import { Explore, Authenticate, AddArtPostPage } from './components/pages/index.js'
 import { Protected, SignupComponent, LoginComponent, ArtPostModal } from './components/index.js'
 
 const router = createBrowserRouter([
@@ -38,12 +38,12 @@ const router = createBrowserRouter([
         ]
       },
       {
-        path: '/add-post',
-        element: <Protected authentication><AddPost /></Protected>
+        path: '/add-art-post',
+        element: <Protected authentication><AddArtPostPage /></Protected>
       },
       {
         path: '/user-profile',
-        element: <Protected authentication><AddPost /></Protected>
+        element: <Protected authentication><AddArtPostPage /></Protected>
       }
     ]
   }

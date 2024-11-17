@@ -45,6 +45,38 @@ export class ArtPostService {
             return error.response;
         }
     }
+
+    async postArt({title, description, isPublished, artFile}){
+        try {
+
+            const formData = new FormData();
+            const data = {
+                title,
+                description,
+                isPublished
+            }
+            Object.keys(data).forEach(key => {
+                formData.append(key, data[key]);
+            });
+            console.log("artFile :: ", artFile);
+            formData.append("artFile", artFile);
+
+            const postData = await axios.post(`/api/art/post`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            if(postData && postData.status === 201){
+                return postData;
+            }
+            else{
+                return postData;
+            }
+        } catch (error) {
+            console.log("Server :: PostService :: postArt :: error :: ", error);
+            return error.response;
+        }
+    }
 }
 
 const artPostService = new ArtPostService();

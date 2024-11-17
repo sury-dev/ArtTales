@@ -7,46 +7,40 @@ import { User } from '../models/user.model.js';
 import { mongoose } from 'mongoose';
 
 const createArtPost = asyncHandler(async (req, res) => {
-    const { title, description, isPublished } = req.body;
-
-    if (title?.trim() === "") {
-        throw new ApiError(400, "Title is required.");
+    try {
+        const { title = "", description ="", isPublished } = req.body;
+    
+        let artFileLocalPath;
+    
+        if(req.file?.path){
+            artFileLocalPath = req.file.path;
+        }
+        const userId = req.user._id;
+    
+        if (!artFileLocalPath) {
+            throw new ApiError(400, "No Picture was uploaded to the server");
+        }
+    
+        const artFile = (await uploadOnCloudinary(artFileLocalPath)).url;
+    
+        const artPost = new ArtPost({
+            title,
+            description,
+            isPublished : isPublished || false,
+            artFile,
+            owner: userId
+        });
+    
+        const artPostDoc = await artPost.save();
+    
+        return res
+        .status(201)
+        .json(
+            new ApiResponse(201, artPostDoc, "Art Post created successfully")
+        )
+    } catch (error) {
+        throw new ApiError(400, error.message);
     }
-
-    const artPostExists = await ArtPost.findOne({ title });
-
-    if (artPostExists) {
-        throw new ApiError(400, "Art Post with this title already exists");
-    }
-
-    let artFileLocalPath;
-
-    if(req.file?.path){
-        artFileLocalPath = req.file.path;
-    }
-    const userId = req.user._id;
-
-    if (!artFileLocalPath) {
-        throw new ApiError(400, "No Picture was uploaded to the server");
-    }
-
-    const artFile = (await uploadOnCloudinary(artFileLocalPath)).url;
-
-    const artPost = new ArtPost({
-        title,
-        description,
-        isPublished : isPublished || false,
-        artFile,
-        owner: userId
-    });
-
-    const artPostDoc = await artPost.save();
-
-    return res
-    .status(201)
-    .json(
-        new ApiResponse(201, artPostDoc, "Art Post created successfully")
-    )
 });
 
 const getProfileArtPosts = asyncHandler(async (req, res) => {

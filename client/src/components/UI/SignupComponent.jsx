@@ -212,7 +212,7 @@ function SignupComponent() {
                         <textarea
                             placeholder="Enter your bio"
                             {...register("bio")}
-                            rows={4} // You can adjust the rows attribute for the height of the textarea
+                            rows={4}
                             className="textArea"
                         ></textarea>
                         <p className='text-red-600'>{step3error}</p> {/*Step 1 error message */}

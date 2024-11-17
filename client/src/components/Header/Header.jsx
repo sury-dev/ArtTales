@@ -17,7 +17,6 @@ function Header() {
 
     const navItemsMid = [
         { name: 'Explore', path: '/', active: authStatus },
-        { name: 'Search', path: '/1', active: authStatus },
         { name: 'Messages', path: '/2', active: authStatus },
         { name: 'Notifications', path: '/3', active: authStatus }
     ]
@@ -59,7 +58,7 @@ function Header() {
                 <li  className='inline-block mx-2'>
                     {authStatus && <CreatePostBtn />}
                 </li>
-                <li>
+                <li className='ml-4'>
                     {authStatus && <ProfileButton />}
                 </li>
             </ul>

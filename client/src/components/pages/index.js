@@ -1,5 +1,5 @@
-import AddPost from "./AddPost";
 import Explore from "./Explore";
 import Authenticate from "./Authenticate";
+import AddArtPostPage from "./AddArtPostPage";
 
-export { AddPost, Explore, Authenticate};
+export { Explore, Authenticate, AddArtPostPage};

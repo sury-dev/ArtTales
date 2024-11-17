@@ -1,0 +1,74 @@
+import React from 'react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { Input } from '../index.js'
+import artPostService from '../../server/artPostService.js'
+import './AddArtPost.css'
+
+function AddArtPost() {
+    const navigate = useNavigate()
+    const [error, setError] = useState("")
+    const [image, setImage] = useState(null);
+    const { register, handleSubmit, getValues } = useForm()
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        setImage(file);
+    }
+
+    const postArt = async (data) => {
+        setError("")
+        try {
+            const obj = { ...data, artFile: image }
+            if (!obj.artFile) {
+                setError("Please upload an image")
+                return
+            }
+            const response = await artPostService.postArt({ ...obj })
+
+            // Check if the response is successful (status 200)
+            if (response && response.status === 201) {
+                navigate('/')
+            } else {
+                setError("Server responded with an error code " + response.status)
+            }
+        } catch (error) {
+            setError("Something went wrong while posting your art")
+        }
+    }
+
+    return (
+        <form className='addArtPostForm bg-black' onSubmit={handleSubmit(postArt)}>
+            <div className="left">
+                <div className="imagePreview">
+                    {image ? <img src={URL.createObjectURL(image)} alt='preview' /> : <div className='imagePlaceholder'>Your uploaded image appears here</div>}
+                </div>
+                {!image ? (<input type="file" accept='image/png, image/jpg, image/jpeg, image/gif' onChange={handleImageUpload} />) : (<button onClick={() => setImage(null)}>Remove</button>)}
+            </div>
+            <div className="right">
+                <div className="rightInputWrapper">
+                    <Input type='text' name='title' placeholder='Title' {...register('title')} />
+                    <textarea
+                        placeholder="Tell about your Art"
+                        {...register("description")}
+                        rows={6}
+                        className="textArea"
+                    ></textarea>
+                    <div className="isPublished">
+                        <select name="isPublished" id="isPublished" {...register('isPublished', { required: true })}>
+                            <option value={true}>Publish</option>
+                            <option value={false}>Draft</option>
+                        </select>
+                    </div>
+                    <div className="error">{error}</div>
+                </div>
+                <button type="submit">Post</button>
+            </div>
+            <div className="lightSource3"></div>
+            <div className="lightSource4"></div>
+        </form>
+    )
+}
+
+export default AddArtPost

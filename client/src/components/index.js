@@ -21,6 +21,8 @@ import LikeButton from "./UI/LikeButton";
 import ViewButton from "./UI/ViewButton.jsx";
 import CommentButton from "./UI/CommentButton.jsx";
 import CommentsCommentContainer from './UI/CommentsCommentContainer.jsx'
+import AddArtPostPage from "./pages/AddArtPostPage.jsx";
+import AddArtPost from "./UI/AddArtPost.jsx";
 
 export {
     Header,
@@ -45,5 +47,7 @@ export {
     LikeButton,
     CommentsCommentContainer,
     ViewButton,
-    CommentButton
+    CommentButton,
+    AddArtPostPage,
+    AddArtPost
 };

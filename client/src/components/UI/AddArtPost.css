@@ -1,0 +1,208 @@
+.addArtPostForm{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 150px 100px;
+  padding-bottom: 50px;
+  gap: 10px;
+  background: linear-gradient(135deg, #2E2E3E, #15151F);
+  /* width: 100vw; */
+  overflow: hidden;
+  position: relative;
+}
+.left{
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100%;
+  height: 100%;
+  gap: 20px;
+  z-index: 1;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 20px;
+}
+.left > input[type="file"] {
+  position: relative;
+  width: 200px;
+  border-radius: 15px;
+  border: 2px solid #fff;
+  transition: 0.3s ease;
+
+  /* Hide the file input's default title and file name */
+  appearance: none; /* Removes default styles */
+  -webkit-appearance: none; /* For WebKit browsers */
+  -moz-appearance: none; /* For Firefox */
+
+  /* Customize further */
+  color: transparent; /* Hide the text */
+  cursor: pointer; /* Show pointer cursor for clickable */
+}
+/* .left > input[type="file"]:hover{
+  border-color: transparent;
+} */
+
+.left > input[type="file"]::-webkit-file-upload-button {
+  /* Customizes the "Choose File" button for webkit browsers */
+  visibility: hidden; /* Hide default button */
+}
+
+.left > input[type="file"]::file-selector-button {
+  /* For modern browsers, customize the button */
+  visibility: hidden; /* Hide button */
+}
+
+.left > input[type="file"]:before {
+  content: "Upload File"; /* Custom button text */
+  display: inline-block;
+  background: black;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+}
+
+.left > input[type="file"]:hover:before {
+  background: linear-gradient(90deg, #D400FF, #8800FF);
+}
+.imagePlaceholder{
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed #fff;
+  color: #fff;
+  font-size: 1.5rem;
+  /* background: rgba(0, 0, 0, 0.2); */
+  backdrop-filter: blur(10px);
+  background: transparent;
+
+}
+.imagePreview{
+  height: calc(100% - 40px);
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+.imagePreview > img{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+.left > button{
+  padding: 10px 20px;
+  color: white;
+  border: 2px solid #fff;
+  border-radius: 15px;
+  font-size: 1.2rem;
+  transition: 0.3s ease;
+  width: 200px;
+  transition: 0.3s ease;
+}
+.left > button:hover{
+  background: linear-gradient(90deg, #8800FF, #D400FF);
+}
+
+.right{
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 20px;
+  z-index: 1;
+}
+
+.rightInputWrapper{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rightInputWrapper > .isPublished{
+  width: 100%;
+    border: white 2px solid;
+    border-radius: 20px;
+    background-color: transparent;
+    font-size: 1rem;
+    height: 50px;
+    text-align: center;
+    outline: none;
+    padding: 0px 20px;
+}
+.isPublished > #isPublished{
+  width: calc(100% - 4px);
+  height: 100%;
+  text-align: center;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  color: white;
+}
+.isPublished > #isPublished option{
+  background-color: #000;
+  color: white;
+}
+
+.right > button{
+  padding: 10px 20px;
+  color: white;
+  border: 2px solid #fff;
+  border-radius: 15px;
+  font-size: 1.2rem;
+  transition: 0.3s ease;
+  width: 200px;
+  transition: 0.3s ease;
+}
+.right > button:hover{
+  background: linear-gradient(90deg, #8800FF, #D400FF);
+}
+
+.lightSource3{
+  position: absolute;
+  background: linear-gradient(90deg, #D400FF, #8800FF);
+  width: 300px;
+  height: 300px;
+  top: 100px;
+  right: -50px;
+  border-radius: 200px;
+  filter: blur(50px);
+  z-index: 0;
+}
+.lightSource4{
+  position: absolute;
+  background: linear-gradient(90deg, #D400FF, #8800FF);
+  width: 400px;
+  height: 400px;
+  top: 250px;
+  left: -100px;
+  border-radius: 200px;
+  filter: blur(50px);
+  z-index: 0;
+  box-shadow: 0px 0px 50px 50px rgba(0, 0, 0, 0.171);
+}
+.error{
+  color: red;
+  font-size: 1.2rem;
+  text-align: center;
+}
