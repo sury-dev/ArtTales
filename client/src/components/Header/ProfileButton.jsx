@@ -23,7 +23,7 @@ function ProfileButton() {
 
     const navigaeToProfile = () => {
         setProfileDropdownVisible(false);
-        navigate(`/user-profile/${userData._id}`);
+        navigate(`/user-profile/${userData.username}`);
     }
 
     useEffect(() => {

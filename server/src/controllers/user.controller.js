@@ -369,49 +369,83 @@ const getUserProfile = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Nos such Profle exists");
     }
 
-    const profile = await User.aggregate([ // similar to creating virtual tables
+    const profile = await User.aggregate([
         {
             $match: {
-                username: username?.toLowerCase()
-            }
+                username: username?.toLowerCase(),
+            },
         },
         {
             $lookup: {
-                from: "follows",  // lowercase and plural
+                from: "follows",
                 localField: "_id",
                 foreignField: "profile",
-                as: "followers"
-            }
+                as: "followers",
+            },
         },
         {
             $lookup: {
                 from: "follows",
                 localField: "_id",
                 foreignField: "follower",
-                as: "following"
-            }
+                as: "following",
+            },
+        },
+        {
+            $lookup: {
+                from: "artposts",
+                let: { userId: "$_id" },
+                pipeline: [
+                    {
+                        $match: {
+                            $expr: {
+                                $and: [
+                                    { $eq: ["$owner", "$$userId"] },
+                                    { $eq: ["$isPublished", true] },
+                                ],
+                            },
+                        },
+                    },
+                ],
+                as: "artPosts",
+            },
+        },
+        {
+            $lookup: {
+                from: "taleposts",
+                localField: "_id",
+                foreignField: "owner",
+                as: "talePosts",
+            },
         },
         {
             $addFields: {
                 followersCount: {
-                    $size: "$followers"
+                    $size: "$followers",
                 },
                 followingCount: {
-                    $size: "$following"
+                    $size: "$following",
                 },
                 isFollowed: {
                     $cond: {
                         if: {
-                            $in: [req.user?._id, "$followers.follower"]
+                            $in: [req.user?._id, "$followers.follower"],
                         },
                         then: true,
-                        else: false
-                    }
-                }
-            }
+                        else: false,
+                    },
+                },
+                artPostsCount: {
+                    $size: "$artPosts",
+                },
+                talePostsCount: {
+                    $size: "$talePosts",
+                },
+            },
         },
         {
             $project: {
+                _id: 1,
                 firstName: 1,
                 lastName: 1,
                 username: 1,
@@ -422,10 +456,13 @@ const getUserProfile = asyncHandler(async (req, res) => {
                 coverImage: 1,
                 email: 1,
                 bio: 1,
-                profession: 1
-            }
-        }
-    ])
+                profession: 1,
+                artPostsCount: 1,
+                talePostsCount: 1,
+            },
+        },
+    ]);
+    
 
     if (!profile?.length) {
         throw new ApiError(404, "Profile does not exist");

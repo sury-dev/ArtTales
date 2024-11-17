@@ -70,6 +70,17 @@ export class UserService {
             console.log("Server :: AuthService :: logoutUser :: error :: ", error);
         }
     }
+
+    async getUserProfile(username){
+        try {
+            const userData = await axios.get(`/api/users/profiles/${username}`);
+            return userData;
+        } catch (error) {
+            console.log("Server :: AuthService :: getUserProfile :: error :: ", error);
+        }
+
+        return null;
+    }
 }
 
 const userService = new UserService();

@@ -171,7 +171,9 @@ const getArtPost = asyncHandler(async (req, res) => {
 });
 
 const getAllArtPosts = asyncHandler(async (req, res) => {
-    const { page = 1, limit = 10, query} = req.query
+    let { page = 1, limit = 10, query} = req.query
+    page = parseInt(page);
+    limit = parseInt(limit);
     // const allArtPosts = await ArtPost.find({
     //     isPublished: true,
     //     $or: [
@@ -251,6 +253,12 @@ const getAllArtPosts = asyncHandler(async (req, res) => {
         },
         {
             $sort: { createdAt: -1 }
+        },
+        {
+            $skip: (page - 1) * limit  // Skip based on current page and limit
+        },
+        {
+            $limit: limit  // Limit the results to the number of items per page
         },
         {
             $project: {
@@ -366,4 +374,101 @@ const incrementViewCount = asyncHandler(async (req, res) => {
     )
 })
 
-export { createArtPost, getArtPost, getAllArtPosts, updateArtPost, deleteArtPost, togglePublishArtPost, incrementViewCount };
+const getProfileArtPosts = asyncHandler(async (req, res) => {
+    let { page = 1, limit = 10 } = req.query;
+    page = parseInt(page);
+    limit = parseInt(limit);
+    const { username } = req.params;
+    const userData = (await User.find({ username: username }))[0];
+
+    try {
+        const profileArtPosts = await ArtPost.aggregate([
+            // Match only published posts
+            {
+                $match: {
+                    $and: [
+                        {
+                            $or: [
+                                { isPublished: true },  // Include documents where isPublished is true
+                                { $expr: { $eq: ["$owner", req.user._id] } } // Include documents where the owner is req.user._id
+                            ]
+                        },
+                        { $expr: { $eq: ["$owner", userData._id] } }  // Ensure the owner is equal to userData._id
+                    ]
+                }
+            },            
+            {
+                $lookup: {
+                    from: "likes",
+                    localField: "_id",
+                    foreignField: "artPost",
+                    as: "likes",
+                },
+            },
+            {
+                $addFields: {
+                    likesCount: { $size: "$likes" },
+                    isLiked: {
+                        $cond: {
+                            if: { $in: [req?.user._id, "$likes.likedBy"] },
+                            then: true,
+                            else: false,
+                        },
+                    },
+                    //owner: { $arrayElemAt: ["$owner", 0] }, // Flatten owner array
+                },
+            },
+            {
+                $lookup: {
+                    from: "comments",
+                    localField: "_id",
+                    foreignField: "artPost",
+                    as: "comments",
+                },
+            },
+            {
+                $addFields: {
+                    commentsCount: { $size: "$comments" },
+                    isCommented: {
+                        $cond: {
+                            if: { $in: [req?.user._id, "$comments.owner"] },
+                            then: true,
+                            else: false,
+                        },
+                    },
+                    //owner: { $arrayElemAt: ["$owner", 0] }, // Flatten owner array
+                },
+            },
+            {
+                $sort: { createdAt: -1 }
+            },
+            {
+                $skip: (page - 1) * limit  // Skip based on current page and limit
+            },
+            {
+                $limit: limit  // Limit the results to the number of items per page
+            },
+            {
+                $project: {
+                    _id: 1,
+                    artFile: 1,
+                    title: 1,
+                    description: 1,
+                    view : 1,
+                    owner : 1,
+                    likesCount: 1,
+                    isLiked: 1,
+                    commentsCount: 1,
+                    isCommented : 1,
+                    isPublished: 1
+                },
+            },
+        ]);
+
+        return res.status(200).json(new ApiResponse(200, profileArtPosts, "Art Posts Fetched successfully"));
+    } catch (error) {
+        throw new ApiError(400, error.message);
+    }
+});
+
+export { createArtPost, getArtPost, getAllArtPosts, getProfileArtPosts, updateArtPost, deleteArtPost, togglePublishArtPost, incrementViewCount };

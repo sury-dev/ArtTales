@@ -42,7 +42,7 @@ const router = createBrowserRouter([
         element: <Protected authentication><AddArtPostPage /></Protected>
       },
       {
-        path: '/user-profile/:id',
+        path: '/user-profile/:username',
         element: <Protected authentication><UserProfile /></Protected>
       }
     ]
