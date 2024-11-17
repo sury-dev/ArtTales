@@ -9,6 +9,7 @@
     z-index: 0;
     padding: 2px;
     border: 2px solid white;
+    cursor: pointer;
 }
 .profile-container>img{
     object-fit: cover;

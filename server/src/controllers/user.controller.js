@@ -467,7 +467,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
     if (!profile?.length) {
         throw new ApiError(404, "Profile does not exist");
     }
-    console.log(profile);
 
     return res
         .status(200)

@@ -77,6 +77,22 @@ export class ArtPostService {
             return error.response;
         }
     }
+
+    async getProfileArtPosts({page, limit, query='', username}){
+        try {
+            const url = `/api/art/get-profile-art-posts/${username}?page=${page}&limit=${limit}`;
+            const postData = await axios.get(url);
+            if(postData && postData.status === 200){
+                return postData;
+            }
+            else{
+                return postData;
+            }
+        } catch (error) {
+            console.log("Server :: PostService :: getProfileArtPosts :: error :: ", error);
+            return error.response;
+        }
+    }
 }
 
 const artPostService = new ArtPostService();

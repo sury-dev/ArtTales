@@ -113,6 +113,7 @@
 .profile>div>p{
     font-size: 1rem;
     font-weight: 200;
+    cursor: pointer;
 }
 .profile-wrapper{
     display: flex;

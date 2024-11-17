@@ -43,7 +43,13 @@ const router = createBrowserRouter([
       },
       {
         path: '/user-profile/:username',
-        element: <Protected authentication><UserProfile /></Protected>
+        element: <Protected authentication><UserProfile /></Protected>,
+        children:[
+          {
+            path: 'artpost/:id',
+            element: <ArtPostModal />
+          }
+        ]
       }
     ]
   }

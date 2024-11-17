@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ArtPostModal.css';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import artPostService from '../../server/artPostService';
 import likeService from '../../server/likeService';
 import { ArtCommentContainer, ProfileIcon, LikeButton } from '../index';
+import { useSelector } from 'react-redux';
 
 function ArtPostModal() {
     // Outlet context for handling modal close action
     const { closeModal } = useOutletContext();
+    const navigate = useNavigate();
+    const user = useSelector((state) => state.auth.userData);
 
     // Retrieve post ID from URL params
     const { id } = useParams();
@@ -67,12 +70,23 @@ function ArtPostModal() {
     }, [id]);
 
     // Show loading state if postData is null
+    
     if (!postData) {
         return (
             <div className="artpost-modal-overlay" onClick={closeModal}>
                 <div className="artpost-modal justify-center" onClick={(e) => e.stopPropagation()}>
                     <button className="close-button" onClick={closeModal}>X</button>
                     <h2>Loading...</h2>
+                </div>
+            </div>
+        );
+    }
+    if(postData.isPublished === false && user?._id !== postData.owner._id){
+        return (
+            <div className="artpost-modal-overlay" onClick={closeModal}>
+                <div className="artpost-modal justify-center" onClick={(e) => e.stopPropagation()}>
+                    <button className="close-button" onClick={closeModal}>X</button>
+                    <h2>This post is not published yet</h2>
                 </div>
             </div>
         );
@@ -108,10 +122,12 @@ function ArtPostModal() {
                     {/* Profile info and follow button */}
                     <div className="profile-wrapper">
                         <div className="profile">
-                            <ProfileIcon profileIcon={postData.owner.avatar} width='80px' />
+                            <div onClick={() => {navigate(`/user-profile/${postData.owner.username}`)}}>
+                                <ProfileIcon profileIcon={postData.owner.avatar} width='80px' />
+                            </div>
                             <div>
                                 <h2>{postData.owner.firstName} {postData?.lastName}</h2>
-                                <p>@{postData.owner.username}</p>
+                                <p onClick={() => {navigate(`/user-profile/${postData.owner.username}`)}}>@{postData.owner.username}</p>
                                 <p>{postData.owner.followersCount} Followers</p>
                                 <p>{postData._id}</p>
                             </div>
@@ -126,7 +142,9 @@ function ArtPostModal() {
                     <div className="divider"></div>
 
                     {/* Comments section */}
-                    <ArtCommentContainer id={id} />
+                    {!postData.isPublished && <p>No comments available for unpublished Posts</p>}
+                    {postData.isPublished && <ArtCommentContainer id={id} />}
+                    
                 </div>
             </div>
         </div>

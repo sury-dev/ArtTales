@@ -54,7 +54,6 @@ const getArtPost = asyncHandler(async (req, res) => {
         { 
             $match: { 
                 _id: new mongoose.Types.ObjectId(id), 
-                isPublished: true 
             } 
         },
         {
@@ -157,7 +156,8 @@ const getArtPost = asyncHandler(async (req, res) => {
                 isLiked: 1,
                 followersCount: 1,
                 isFollowed: 1,
-                owner: { $arrayElemAt: ["$owner", 0] }
+                owner: { $arrayElemAt: ["$owner", 0] },
+                isPublished: 1
             }
         }
     ]);
