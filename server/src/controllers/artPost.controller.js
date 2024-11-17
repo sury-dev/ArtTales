@@ -43,7 +43,7 @@ const createArtPost = asyncHandler(async (req, res) => {
     }
 });
 
-const getProfileArtPosts = asyncHandler(async (req, res) => {
+const getArtPost = asyncHandler(async (req, res) => {
     const {id} = req.params;
 
     if (!mongoose.isValidObjectId(id)){
@@ -366,4 +366,4 @@ const incrementViewCount = asyncHandler(async (req, res) => {
     )
 })
 
-export { createArtPost, getProfileArtPosts, getAllArtPosts, updateArtPost, deleteArtPost, togglePublishArtPost, incrementViewCount };
+export { createArtPost, getArtPost, getAllArtPosts, updateArtPost, deleteArtPost, togglePublishArtPost, incrementViewCount };

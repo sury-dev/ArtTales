@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createArtPost, getProfileArtPosts, getAllArtPosts, updateArtPost, deleteArtPost, togglePublishArtPost, incrementViewCount } from "../controllers/artPost.controller.js";
+import { createArtPost, getArtPost, getAllArtPosts, updateArtPost, deleteArtPost, togglePublishArtPost, incrementViewCount } from "../controllers/artPost.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -7,7 +7,7 @@ const router = Router();
 
 //Secured Routes
 router.route("/post").post( verifyJWT, upload.single("artFile"), createArtPost );
-router.route("/artPost/:id").get(verifyJWT, getProfileArtPosts);
+router.route("/artPost/:id").get(verifyJWT, getArtPost);
 router.route("/get-all-posts").get(verifyJWT, getAllArtPosts);
 router.route("/update-art-post").patch(verifyJWT, updateArtPost);
 router.route("/update-publish-status").patch(verifyJWT, togglePublishArtPost);

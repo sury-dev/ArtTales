@@ -13,6 +13,7 @@ function AddArtPost() {
     const { register, handleSubmit, getValues } = useForm()
 
     const handleImageUpload = async (e) => {
+        setError("")
         const file = e.target.files[0];
         setImage(file);
     }

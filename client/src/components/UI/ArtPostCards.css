@@ -4,6 +4,17 @@
     position: relative;
     border-radius: 25px;
     overflow: hidden;
+    animation: slideUp 0.5s ease forwards;
+    animation-delay: calc(var(--index) * 0.05s);
+    transform: translateY(100%);
+}
+@keyframes slideUp {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
 }
 .card > img{
     height: 100%;

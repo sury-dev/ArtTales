@@ -21,6 +21,8 @@ function CreatePostBtn() {
     };
 
     const handleAddArtPostClick = () => {
+        setDropdownVisible(false);
+        setBtnRotateStatus('0deg');
         navigate('/add-art-post');
     }
 

@@ -2,9 +2,9 @@ import React from 'react'
 import './ArtPostCards.css'
 import { LikeButton, ViewButton, CommentButton } from '../index'
 
-function ArtPostCards({artFile, title, description, view, onClick, isLiked, likesCount, commentsCount, isCommented}) {
+function ArtPostCards({artFile, title, description, view, onClick, isLiked, likesCount, commentsCount, isCommented, index=0}) {
     return (
-        <div className='card' onClick={onClick}>
+        <div className='card' onClick={onClick} style={{'--index' : index}}>
             <img src={artFile} loading='lazy' alt={title} />
             <div className="overlay"></div>
             <div className="card-content">

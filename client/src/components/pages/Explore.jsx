@@ -38,17 +38,17 @@ function Explore() {
 
     return (
         <div className='explore bg-black text-white'>
-            {artPosts.map((post) => (
-                <ArtPostCards key={post._id} {...post} onClick={() => handleCardClick(post)} />
+            {artPosts.map((post, index) => (
+                <ArtPostCards key={post._id} {...post} index={index} onClick={() => handleCardClick(post)} />
             ))}
-            {artPosts.map((post) => (
-                <ArtPostCards key={post._id} {...post} onClick={() => handleCardClick(post)} />
+            {artPosts.map((post, index) => (
+                <ArtPostCards key={post._id} {...post} index={index + 11} onClick={() => handleCardClick(post)} />
             ))}
-            {artPosts.map((post) => (
-                <ArtPostCards key={post._id} {...post} onClick={() => handleCardClick(post)} />
+            {artPosts.map((post, index) => (
+                <ArtPostCards key={post._id} {...post} index={index + 22} onClick={() => handleCardClick(post)} />
             ))}
-            {artPosts.map((post) => (
-                <ArtPostCards key={post._id} {...post} onClick={() => handleCardClick(post)} />
+            {artPosts.map((post, index) => (
+                <ArtPostCards key={post._id} {...post} index={index + 33} onClick={() => handleCardClick(post)} />
             ))}
             <Outlet context={{closeModal}} />
         </div>

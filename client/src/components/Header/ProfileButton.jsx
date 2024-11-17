@@ -3,10 +3,13 @@ import { ProfileIcon } from '../index.js';
 import { useSelector } from 'react-redux';
 import LogoutBtn from './LogoutBtn.jsx';
 import './ProfileButton.css';
+import { useNavigate } from 'react-router-dom';
 
 function ProfileButton() {
+    const userData = useSelector((state) => state.auth.userData);
     const [profileDropdownVisible, setProfileDropdownVisible] = useState(false);
     const dropdownRef = useRef(null);
+    const navigate = useNavigate();
 
     const headerProfileToggleDropdown = () => {
         setProfileDropdownVisible((prevState) => !prevState);
@@ -18,6 +21,11 @@ function ProfileButton() {
         }
     };
 
+    const navigaeToProfile = () => {
+        setProfileDropdownVisible(false);
+        navigate(`/user-profile/${userData._id}`);
+    }
+
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
@@ -25,8 +33,6 @@ function ProfileButton() {
         };
     }, []);
 
-    const userData = useSelector((state) => state.auth.userData);
-    console.log("ProfileButton :: userData :: ", userData);
 
     return (
         <div className="header-profile-wrapper" ref={dropdownRef}>
@@ -35,7 +41,7 @@ function ProfileButton() {
             </div>
             {profileDropdownVisible && (
                 <div className="header-profile-dropdown">
-                    <button className="header-profile-dropdown-item">My Profile</button>
+                    <button className="header-profile-dropdown-item" onClick={navigaeToProfile}>My Profile</button>
                     <LogoutBtn />
                 </div>
             )}
