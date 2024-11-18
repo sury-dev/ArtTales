@@ -11,7 +11,7 @@ import LoginComponent from "./UI/LoginComponent";
 import SignupComponent from "./UI/SignupComponent";
 import RTE from "./Utility/RTE";
 import ArtPostForm from "./Post/ArtPostForm";
-import Protected from "./auth/authLayout.jsx";
+import Protected from "./auth/authLayout";
 import ArtPostCards from "./UI/ArtPostCards";
 import ArtPostModal from "./UI/ArtPostModal";
 import ProfileIcon from "./UI/ProfileIcon";
