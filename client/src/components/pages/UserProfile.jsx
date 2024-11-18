@@ -3,6 +3,7 @@ import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import userService from '../../server/userService';
 import artPostService from '../../server/artPostService';
+import followService from '../../server/followService';
 import './UserProfile.css';
 import { ProfileIcon, ArtPostCards } from '../index';
 
@@ -15,6 +16,18 @@ function UserProfile() {
     const [artPosts, setArtPosts] = useState([]);
     const [selectedPost, setSelectedPost] = useState(null);
 
+    const handleFollow = () => {
+        setUserProfile((prevData) => ({
+            ...prevData,
+            isFollowed: !prevData.isFollowed,
+            followersCount: prevData.isFollowed ? prevData.followersCount - 1 : prevData.followersCount + 1,
+            followingCount: prevData.isFollowed ? prevData.followingCount - 1 : prevData.followingCount + 1
+        }));
+        followService.toggleFollow({ id: userProfile._id }).catch((error) => {
+            console.log("ArtPostModal :: handleFollow :: error :: ", error);
+        });
+    }
+
     const handleCardClick = (post) => {
         setSelectedPost(post);
         navigate(`/user-profile/${username}/artpost/${post._id}`);
@@ -22,11 +35,10 @@ function UserProfile() {
 
     const closeModal = () => {
         setSelectedPost(null);
-        navigate(`/user-profile/${username}`); // Reset to profile page
+        navigate(`/user-profile/${username}`);
     };
 
     useEffect(() => {
-        // Fetch user's art posts
         artPostService
             .getProfileArtPosts({ page: 1, limit: 10, query: '', username })
             .then((postData) => {
@@ -40,7 +52,6 @@ function UserProfile() {
     }, [username]);
 
     useEffect(() => {
-        // Fetch user profile data
         userService
             .getUserProfile(username)
             .then((response) => {
@@ -74,8 +85,8 @@ function UserProfile() {
                             </h1>
                             <h3>@{userProfile.username}</h3>
                             <div className="followDetails">
-                                <button className="followButton border-white border-2 text-white hover:bg-white hover:text-black">
-                                    {userProfile.isFollowing ? 'Unfollow' : 'Follow'}
+                                <button className="followButton border-white border-2 text-white hover:bg-white hover:text-black" onClick={handleFollow}>
+                                    {userProfile.isFollowed ? 'Unfollow' : 'Follow'}
                                 </button>
                                 <div className="numDetails">
                                     <h5>{userProfile.followersCount}</h5>

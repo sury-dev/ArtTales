@@ -2,10 +2,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export class UserService {
-    constructor() {
-        // const healthCheck = await axios.get("http://localhost:7000/health")
-        console.log("UserService :: constructor");
-    }
 
     async createUser({username, email, phoneNumber, firstName, lastName, dateOfBirth, password, avatar, coverImage, bio, profession}){
         try {

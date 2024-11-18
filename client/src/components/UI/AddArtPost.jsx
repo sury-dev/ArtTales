@@ -28,7 +28,6 @@ function AddArtPost() {
             }
             const response = await artPostService.postArt({ ...obj })
 
-            // Check if the response is successful (status 200)
             if (response && response.status === 201) {
                 navigate('/')
             } else {

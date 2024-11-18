@@ -1,10 +1,6 @@
 import axios from "axios";
 
 export class CommentService {
-    constructor() {
-        const healthCheck = axios.get("http://localhost:7000/health")
-        console.log(healthCheck);
-    }
     async getArtComment({id, page, limit=5}){
         try {
             const postData = await axios.get(`/api/comments/get-comments-of-art/${id}?page=${page}&limit=${limit}`);

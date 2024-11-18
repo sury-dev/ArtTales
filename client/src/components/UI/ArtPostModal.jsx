@@ -2,51 +2,59 @@ import React, { useState, useEffect, useRef } from 'react';
 import './ArtPostModal.css';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import artPostService from '../../server/artPostService';
+import followService from '../../server/followService';
 import likeService from '../../server/likeService';
 import { ArtCommentContainer, ProfileIcon, LikeButton } from '../index';
 import { useSelector } from 'react-redux';
 
 function ArtPostModal() {
-    // Outlet context for handling modal close action
     const { closeModal } = useOutletContext();
     const navigate = useNavigate();
     const user = useSelector((state) => state.auth.userData);
 
-    // Retrieve post ID from URL params
     const { id } = useParams();
     if (!id) return null;
 
     // State variables
-    const [postData, setPostData] = useState(null); // Stores post data
-    const [isExpanded, setIsExpanded] = useState(false); // Controls description expansion
+    const [postData, setPostData] = useState(null);
+    const [isExpanded, setIsExpanded] = useState(false);
 
-    // Ref to manage the description element for measuring its height
     const descriptionRef = useRef(null);
-    let useEffectRunCount = 1; // Control initial useEffect run
+    let useEffectRunCount = 1; 
 
-    // Toggle like status and update the likes count
-    const handleLike = () => {
+
+    const handleFollow = () => {
         setPostData((prevData) => ({
             ...prevData,
-            isLiked: !prevData.isLiked,
-            likesCount: prevData.isLiked ? prevData.likesCount - 1 : prevData.likesCount + 1
+            owner: {
+                ...prevData.owner,
+                isFollowed: !prevData.owner.isFollowed,
+                followersCount: prevData.owner.isFollowed ? prevData.owner.followersCount - 1 : prevData.owner.followersCount + 1
+            }
         }));
+        followService.toggleFollow({ id: postData.owner._id }).catch((error) => {
+            console.log("ArtPostModal :: handleFollow :: error :: ", error);
+        });
+    }
+
+    const testFunction = () => {
+        console.log("testFunction");
+    }
+
+    const handleLike = () => {
         likeService.likeArtPost({ id }).catch((error) => {
             console.log("ArtPostModal :: handleLike :: error :: ", error);
         });
     };
 
-    // Measure description height for conditional expansion
     const measureDescriptionHeight = () => {
         return descriptionRef.current ? descriptionRef.current.scrollHeight : 'auto';
     };
 
-    // Toggle description expansion state
     const toggleDescription = () => {
         setIsExpanded((prev) => !prev);
     };
 
-    // Fetch post data and increment view count on component mount
     useEffect(() => {
         if (useEffectRunCount === 1) {
             useEffectRunCount++;
@@ -69,8 +77,7 @@ function ArtPostModal() {
         });
     }, [id]);
 
-    // Show loading state if postData is null
-    
+
     if (!postData) {
         return (
             <div className="artpost-modal-overlay" onClick={closeModal}>
@@ -81,7 +88,7 @@ function ArtPostModal() {
             </div>
         );
     }
-    if(postData.isPublished === false && user?._id !== postData.owner._id){
+    if (postData.isPublished === false && user?._id !== postData.owner._id) {
         return (
             <div className="artpost-modal-overlay" onClick={closeModal}>
                 <div className="artpost-modal justify-center" onClick={(e) => e.stopPropagation()}>
@@ -92,24 +99,21 @@ function ArtPostModal() {
         );
     }
 
-    // Main modal layout
     return (
         <div className="artpost-modal-overlay" onClick={closeModal}>
             <div className="artpost-modal" onClick={(e) => e.stopPropagation()}>
                 <button className="close-button text-white bg-black" onClick={closeModal}>X</button>
-                
+
                 <div className="image-container">
                     <img src={postData.artFile} alt={postData.title} />
                 </div>
-                
+
                 <div className="details-container">
-                    {/* Title and like button */}
                     <div className="titleAndLikes">
                         <h2>{postData.title}</h2>
                         <LikeButton isLiked={postData.isLiked} likesCount={postData.likesCount} onLike={handleLike} />
                     </div>
-                    
-                    {/* Description with expansion control */}
+
                     <div
                         className="description"
                         ref={descriptionRef}
@@ -118,33 +122,27 @@ function ArtPostModal() {
                     >
                         <p>{postData.description}</p>
                     </div>
-                    
-                    {/* Profile info and follow button */}
+
                     <div className="profile-wrapper">
                         <div className="profile">
-                            <div onClick={() => {navigate(`/user-profile/${postData.owner.username}`)}}>
+                            <div onClick={() => { navigate(`/user-profile/${postData.owner.username}`) }}>
                                 <ProfileIcon profileIcon={postData.owner.avatar} width='80px' />
                             </div>
                             <div>
                                 <h2>{postData.owner.firstName} {postData?.lastName}</h2>
-                                <p onClick={() => {navigate(`/user-profile/${postData.owner.username}`)}}>@{postData.owner.username}</p>
+                                <p onClick={() => { navigate(`/user-profile/${postData.owner.username}`) }}>@{postData.owner.username}</p>
                                 <p>{postData.owner.followersCount} Followers</p>
                                 <p>{postData._id}</p>
                             </div>
                         </div>
-                        {!!postData.isFollowed ? (
-                            <button className="follow-button">Unfollow</button>
-                        ) : (
-                            <button className="follow-button">Follow</button>
-                        )}
+                        <button className="follow-button" onClick={handleFollow}>{postData.owner.isFollowed ? "Unfollow" : "Follow"}</button>
                     </div>
 
                     <div className="divider"></div>
 
-                    {/* Comments section */}
                     {!postData.isPublished && <p>No comments available for unpublished Posts</p>}
                     {postData.isPublished && <ArtCommentContainer id={id} />}
-                    
+
                 </div>
             </div>
         </div>

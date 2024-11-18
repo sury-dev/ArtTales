@@ -6,14 +6,14 @@ import { useNavigate } from 'react-router-dom'
 
 function LogoutBtn() {
     const dispatch = useDispatch()
-    const navigate = useNavigate()  // Move useNavigate outside of handleLogout
+    const navigate = useNavigate()
 
     const handleLogout = () => {
         userService.logoutUser()
             .then((response) => {
                 if (response.status === 200) {
                     dispatch(logout())
-                    navigate('/auth/login')  // Use navigate here after dispatching logout
+                    navigate('/auth/login') 
                 }
             })
             .catch((error) => {

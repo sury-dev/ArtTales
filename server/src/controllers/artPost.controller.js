@@ -8,53 +8,53 @@ import { mongoose } from 'mongoose';
 
 const createArtPost = asyncHandler(async (req, res) => {
     try {
-        const { title = "", description ="", isPublished } = req.body;
-    
+        const { title = "", description = "", isPublished } = req.body;
+
         let artFileLocalPath;
-    
-        if(req.file?.path){
+
+        if (req.file?.path) {
             artFileLocalPath = req.file.path;
         }
         const userId = req.user._id;
-    
+
         if (!artFileLocalPath) {
             throw new ApiError(400, "No Picture was uploaded to the server");
         }
-    
+
         const artFile = (await uploadOnCloudinary(artFileLocalPath)).url;
-    
+
         const artPost = new ArtPost({
             title,
             description,
-            isPublished : isPublished || false,
+            isPublished: isPublished || false,
             artFile,
             owner: userId
         });
-    
+
         const artPostDoc = await artPost.save();
-    
+
         return res
-        .status(201)
-        .json(
-            new ApiResponse(201, artPostDoc, "Art Post created successfully")
-        )
+            .status(201)
+            .json(
+                new ApiResponse(201, artPostDoc, "Art Post created successfully")
+            )
     } catch (error) {
         throw new ApiError(400, error.message);
     }
 });
 
 const getArtPost = asyncHandler(async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
 
-    if (!mongoose.isValidObjectId(id)){
+    if (!mongoose.isValidObjectId(id)) {
         throw new ApiError(400, "Not a valid ID");
     }
 
     const artPost = await ArtPost.aggregate([
-        { 
-            $match: { 
-                _id: new mongoose.Types.ObjectId(id), 
-            } 
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(id),
+            }
         },
         {
             $lookup: {
@@ -124,28 +124,6 @@ const getArtPost = asyncHandler(async (req, res) => {
             }
         },
         {
-            $lookup: {
-                from: 'follows', // Followers collection
-                localField: 'owner', // artPost's owner (profile being followed)
-                foreignField: 'profile', // profile being followed
-                as: 'followers' // Alias for followers
-            }
-        },
-        {
-            $addFields: {
-                followersCount: { $size: "$followers" }, // Count followers for the owner
-                isFollowed: {
-                    $cond: {
-                        if: {
-                            $in: [req?.user._id, "$followers.follower"]
-                        },
-                        then: true,
-                        else: false
-                    }
-                }
-            }
-        },
-        {
             $project: {
                 _id: 1,
                 artFile: 1,
@@ -155,23 +133,22 @@ const getArtPost = asyncHandler(async (req, res) => {
                 view: 1,
                 isLiked: 1,
                 followersCount: 1,
-                isFollowed: 1,
                 owner: { $arrayElemAt: ["$owner", 0] },
                 isPublished: 1
             }
         }
     ]);
-    
+
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(200, artPost[0], "Art Post Fetched successfully")
-    )
+        .status(200)
+        .json(
+            new ApiResponse(200, artPost[0], "Art Post Fetched successfully")
+        )
 });
 
 const getAllArtPosts = asyncHandler(async (req, res) => {
-    let { page = 1, limit = 10, query} = req.query
+    let { page = 1, limit = 10, query } = req.query
     page = parseInt(page);
     limit = parseInt(limit);
     // const allArtPosts = await ArtPost.find({
@@ -266,37 +243,37 @@ const getAllArtPosts = asyncHandler(async (req, res) => {
                 artFile: 1,
                 title: 1,
                 description: 1,
-                view : 1,
-                owner : 1,
+                view: 1,
+                owner: 1,
                 likesCount: 1,
                 isLiked: 1,
                 commentsCount: 1,
-                isCommented : 1
+                isCommented: 1
             },
         },
     ]);
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(200, allArtPosts, "Art Posts Fetched successfully")
-    )
+        .status(200)
+        .json(
+            new ApiResponse(200, allArtPosts, "Art Posts Fetched successfully")
+        )
 })
 
 const updateArtPost = asyncHandler(async (req, res) => {
-    const { _id ,title, description} = req.body;
+    const { _id, title, description } = req.body;
 
-    if (!mongoose.isValidObjectId(_id)){
+    if (!mongoose.isValidObjectId(_id)) {
         throw new ApiError(400, "Not a valid ID");
     }
 
     const artPostExists = await ArtPost.findOne({ _id, owner: req.user._id });
 
-    if(!artPostExists){
+    if (!artPostExists) {
         throw new ApiError(404, "Either the Art Post does not exist or you are not authorized to update this Art Post");
     }
 
-    if(!title){
+    if (!title) {
         throw new ApiError(400, "Title is required");
     }
 
@@ -305,73 +282,73 @@ const updateArtPost = asyncHandler(async (req, res) => {
         description: description || ""
     }
 
-    const artPostDoc = await ArtPost.findByIdAndUpdate(_id, artObj, {new: true});
+    const artPostDoc = await ArtPost.findByIdAndUpdate(_id, artObj, { new: true });
 
     return res
-    .status(201)
-    .json(
-        new ApiResponse(201, artPostDoc, "Art Post Updated successfully")
-    )
+        .status(201)
+        .json(
+            new ApiResponse(201, artPostDoc, "Art Post Updated successfully")
+        )
 });
 
 const deleteArtPost = asyncHandler(async (req, res) => {
     const { _id } = req.body;
 
-    if (!mongoose.isValidObjectId(_id)){
+    if (!mongoose.isValidObjectId(_id)) {
         throw new ApiError(400, "Not a valid ID");
     }
 
     const artPostExists = await ArtPost.findOne({ _id, owner: req.user._id });
 
-    if(!artPostExists){
+    if (!artPostExists) {
         throw new ApiError(404, "Either the Art Post does not exist or you are not authorized to delete this Art Post");
     }
 
     const artPostDoc = await ArtPost.findByIdAndDelete(_id);
 
     return res
-    .status(201)
-    .json(
-        new ApiResponse(201, artPostDoc, "Art Post Deleted successfully")
-    )
+        .status(201)
+        .json(
+            new ApiResponse(201, artPostDoc, "Art Post Deleted successfully")
+        )
 });
 
 const togglePublishArtPost = asyncHandler(async (req, res) => {
     const { _id } = req.body;
 
-    if (!mongoose.isValidObjectId(_id)){
+    if (!mongoose.isValidObjectId(_id)) {
         throw new ApiError(400, "Invalid ArtPost ID");
     }
 
     const artPostExists = await ArtPost.findOne({ _id, owner: req.user._id });
 
-    if(!artPostExists){
+    if (!artPostExists) {
         throw new ApiError(404, "You are not authorized to update this Art Post");
     }
 
-    const artPostDoc = await ArtPost.findByIdAndUpdate(_id, {isPublished: !artPostExists.isPublished}, {new: true});
+    const artPostDoc = await ArtPost.findByIdAndUpdate(_id, { isPublished: !artPostExists.isPublished }, { new: true });
 
     return res
-    .status(201)
-    .json(
-        new ApiResponse(201, artPostDoc, "Art Post Updated successfully")
-    )
+        .status(201)
+        .json(
+            new ApiResponse(201, artPostDoc, "Art Post Updated successfully")
+        )
 });
 
 const incrementViewCount = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    if (!mongoose.isValidObjectId(id)){
+    if (!mongoose.isValidObjectId(id)) {
         throw new ApiError(400, "Invalid Art Post Id");
     }
 
-    const artPostDoc = await ArtPost.findByIdAndUpdate(id, {$inc: {view: 1}}, {new: true});
+    const artPostDoc = await ArtPost.findByIdAndUpdate(id, { $inc: { view: 1 } }, { new: true });
 
     return res
-    .status(201)
-    .json(
-        new ApiResponse(201, artPostDoc, "Art Post Updated successfully")
-    )
+        .status(201)
+        .json(
+            new ApiResponse(201, artPostDoc, "Art Post Updated successfully")
+        )
 })
 
 const getProfileArtPosts = asyncHandler(async (req, res) => {
@@ -396,7 +373,7 @@ const getProfileArtPosts = asyncHandler(async (req, res) => {
                         { $expr: { $eq: ["$owner", userData._id] } }  // Ensure the owner is equal to userData._id
                     ]
                 }
-            },            
+            },
             {
                 $lookup: {
                     from: "likes",
@@ -454,12 +431,12 @@ const getProfileArtPosts = asyncHandler(async (req, res) => {
                     artFile: 1,
                     title: 1,
                     description: 1,
-                    view : 1,
-                    owner : 1,
+                    view: 1,
+                    owner: 1,
                     likesCount: 1,
                     isLiked: 1,
                     commentsCount: 1,
-                    isCommented : 1,
+                    isCommented: 1,
                     isPublished: 1
                 },
             },

@@ -33,7 +33,7 @@ function Explore() {
 
     const closeModal = () => {
         setSelectedPost(null)
-        navigate('/') // Reset URL when modal closes
+        navigate('/')
     }
 
     return (

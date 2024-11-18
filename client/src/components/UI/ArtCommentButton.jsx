@@ -12,9 +12,9 @@ function ArtCommentButton({ className = "", sizeFunction, ...props }, ref) {
             ref={ref}
             onInput={(e) => {
                     sizeFunction(e.target);
-            }} // Trigger resize on change
+            }}
             rows='1'
-            style={{ overflow: 'hidden', resize: 'none' }} // Hide the scrollbar and disable manual resizing
+            style={{ overflow: 'hidden', resize: 'none' }}
             {...props}
         />
     );
