@@ -27,6 +27,9 @@ import taleBookRouter from "./routes/taleBook.routes.js"
 import followRouter from "./routes/follow.routes.js"
 //routes declaration
 
+
+
+
 app.use("/api/users", userRouter)
 app.use("/api/art", artRouter)
 app.use("/api/albums", albumRouter)
