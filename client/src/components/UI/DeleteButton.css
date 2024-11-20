@@ -1,0 +1,13 @@
+.deleteButton{
+    outline: none;
+    border: none;
+    background-color: transparent;
+    margin-left: 20px;
+    transition: all 0.15s ease-in;
+}
+.deleteButton:hover{
+    transform: scale(1.1);
+}
+.deleteButton:active{
+    transform: scale(0.9);
+}
