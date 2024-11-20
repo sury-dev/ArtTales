@@ -17,7 +17,7 @@ app.use(cookieParser());
 // }))
 
 app.use(cors({
-    origin: ["https://art-tales-frontend.vercel.app/", "http://localhost:3000"],
+    origin: ["https://arttales-1.onrender.com/", "http://localhost:3000"],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true
     }
