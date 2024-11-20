@@ -7,7 +7,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         // target: 'http://localhost:7000',
-        target: 'https://arttales.onrender.com/',
+        target: 'https://arttales.onrender.com',
         changeOrigin: true, // Ensures that the proxy target's origin is used
         secure: false,      // If you're using HTTP instead of HTTPS, this should be false
       },
