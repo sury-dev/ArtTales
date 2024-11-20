@@ -17,8 +17,8 @@ app.use(cookieParser());
 // }))
 
 app.use(cors({
-    origin: ["https://frontend-sih-swart.vercel.app", "http://localhost:3000"],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: ["https://art-tales-frontend.vercel.app/", "http://localhost:3000"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true
     }
 ));
