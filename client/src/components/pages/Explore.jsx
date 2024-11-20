@@ -9,16 +9,12 @@ function Explore() {
     const [artPosts, setArtPosts] = useState([])
     const [selectedPost, setSelectedPost] = useState(null)
     const navigate = useNavigate()
-    let useEffectRunCount = 1
     useEffect(()=>{
-        if (useEffectRunCount === 1) {
-            useEffectRunCount++;
-            return;
-        }
         artPostService.getAllArtPosts({page: 1, limit: 10, query: ''})
             .then((postData) => {
                 if(postData && postData.status === 200){
                     setArtPosts(postData.data.data)
+                    console.log("Explore :: useEffect :: postData :: ", postData)
                 }
             })
             .catch((error) => {

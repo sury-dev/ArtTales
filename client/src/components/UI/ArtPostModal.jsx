@@ -56,10 +56,6 @@ function ArtPostModal() {
     };
 
     useEffect(() => {
-        if (useEffectRunCount === 1) {
-            useEffectRunCount++;
-            return;
-        }
 
         artPostService.getArtPost({ id })
             .then((postData) => {
@@ -71,7 +67,6 @@ function ArtPostModal() {
                 console.log("ArtPostModal :: useEffect :: error :: ", error);
             });
 
-        // Increment view count
         artPostService.incrementArtView({ id }).catch((error) => {
             console.log("ArtPostModal :: useEffect :: error :: ", error);
         });
