@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import commentService from '../../server/commentService'
 import likeService from '../../server/likeService.js'
 import { useForm } from 'react-hook-form'
-import { ProfileIcon, ArtCommentButton, LikeButton } from '../index.js'
+import { ProfileIcon, ArtCommentButton, LikeButton, DeleteButton } from '../index.js'
 
 function CommentsCommentContainer({ id }) {
     // Redux state
@@ -28,6 +28,21 @@ function CommentsCommentContainer({ id }) {
     // Handlers and functions
     const showReplyBox = () => {
         setReplyExpandState((prev) => !prev)
+    }
+
+    const handleDelete = (id) => {
+        try {
+            commentService.deleteComment({ id }).then((response) => {
+                if (response && response.status === 200) {
+                    setComments((prevComments) => prevComments.filter((comment) => comment._id !== id))
+                }
+                else{
+                    console.log("Could Not delete your comment");
+                }
+            })
+        } catch (error) {
+            console.log("ArtPostModal :: handleDelete :: error :: ", error);
+        }
     }
 
     const sizeFunction = (target) => {
@@ -146,7 +161,8 @@ function CommentsCommentContainer({ id }) {
                                     likeIconHeight='25px'
                                     onLike={() => handleCommentLike(comment._id)}
                                 />
-                                <p>Comment ID : {comment._id}</p>
+                                {userData._id === comment.owner._id && (<DeleteButton onDelete={()=>{handleDelete(comment._id)}} deleteIconHeight='25px'/>)}
+                                {/* <p>Comment ID : {comment._id}</p> */}
                             </div>
                             <p
                                 ref={(el) => commentRefs.current[comment._id] = el}

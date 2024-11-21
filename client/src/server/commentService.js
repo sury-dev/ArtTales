@@ -57,6 +57,20 @@ export class CommentService {
             return error.response;
         }
     }
+    async deleteComment({id}){
+        try {
+            const commentData = await axios.delete(`/api/comments/delete-comment/${id}`);
+            if(commentData && commentData.status === 200){
+                return commentData;
+            }
+            else{
+                return commentData;
+            }
+        } catch (error) {
+            console.log("Server :: CommentService :: deleteComment :: error :: ", error);
+            return error.response;
+        }
+    }
 }
 
 const commentService = new CommentService();

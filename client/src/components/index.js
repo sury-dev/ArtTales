@@ -23,6 +23,7 @@ import CommentButton from "./UI/CommentButton.jsx";
 import CommentsCommentContainer from './UI/CommentsCommentContainer.jsx'
 import AddArtPostPage from "./pages/AddArtPostPage.jsx";
 import AddArtPost from "./UI/AddArtPost.jsx";
+import DeleteButton from "./UI/DeleteButton.jsx";
 
 export {
     Header,
@@ -49,5 +50,6 @@ export {
     ViewButton,
     CommentButton,
     AddArtPostPage,
-    AddArtPost
+    AddArtPost,
+    DeleteButton
 };

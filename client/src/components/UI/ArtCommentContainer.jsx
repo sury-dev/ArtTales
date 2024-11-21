@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import commentService from '../../server/commentService';
 import likeService from '../../server/likeService';
-import { ArtCommentButton, ProfileIcon, LikeButton, CommentsCommentContainer } from '../index';
+import { ArtCommentButton, ProfileIcon, LikeButton, CommentsCommentContainer, DeleteButton } from '../index';
 import './ArtCommentContainer.css';
 
 function ArtCommentContainer({ id }) {
@@ -59,6 +59,22 @@ function ArtCommentContainer({ id }) {
         const commentElement = commentRefs.current[commentId];
         return commentElement ? commentElement.scrollHeight : 'auto';
     };
+
+    const handleDelete = (id) => {
+        try {
+            commentService.deleteComment({ id }).then((response) => {
+                if (response && response.status === 200) {
+                    setComments((prevComments) => prevComments.filter((comment) => comment._id !== id));
+                    setNumberOfComments((prev) => prev - 1);
+                }
+                else{
+                    console.log("Could Not delete your comment");
+                }
+            })
+        } catch (error) {
+            console.log("ArtPostModal :: handleDelete :: error :: ", error);
+        }
+    }
 
     // Handles like functionality for comments
     const handleCommentLike = async (commentId) => {
@@ -151,7 +167,8 @@ function ArtCommentContainer({ id }) {
                                     likeIconHeight='25px'
                                     onLike={() => handleCommentLike(comment._id)}
                                 />
-                                <p>Comment ID : {comment._id}</p>
+                                {userData._id === comment.owner._id && (<DeleteButton onDelete={()=>{handleDelete(comment._id)}} deleteIconHeight='25px'/>)}
+                                {/* <p>Comment ID : {comment._id}</p> */}
                             </div>
                             <p
                                 ref={(el) => commentRefs.current[comment._id] = el}

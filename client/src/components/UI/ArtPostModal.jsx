@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import './ArtPostModal.css';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import artPostService from '../../server/artPostService';
+import commentService from '../../server/commentService';
 import followService from '../../server/followService';
 import likeService from '../../server/likeService';
-import { ArtCommentContainer, ProfileIcon, LikeButton } from '../index';
+import { ArtCommentContainer, ProfileIcon, LikeButton, DeleteButton } from '../index';
 import { useSelector } from 'react-redux';
 
 function ArtPostModal() {
@@ -20,7 +21,6 @@ function ArtPostModal() {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const descriptionRef = useRef(null);
-    let useEffectRunCount = 1; 
 
 
     const handleFollow = () => {
@@ -35,10 +35,6 @@ function ArtPostModal() {
         followService.toggleFollow({ id: postData.owner._id }).catch((error) => {
             console.log("ArtPostModal :: handleFollow :: error :: ", error);
         });
-    }
-
-    const testFunction = () => {
-        console.log("testFunction");
     }
 
     const handleLike = () => {
@@ -127,7 +123,7 @@ function ArtPostModal() {
                                 <h2>{postData.owner.firstName} {postData?.lastName}</h2>
                                 <p onClick={() => { navigate(`/user-profile/${postData.owner.username}`) }}>@{postData.owner.username}</p>
                                 <p>{postData.owner.followersCount} Followers</p>
-                                <p>{postData._id}</p>
+                                {/* <p>{postData._id}</p> */}
                             </div>
                         </div>
                         <button className="follow-button" onClick={handleFollow}>{postData.owner.isFollowed ? "Unfollow" : "Follow"}</button>

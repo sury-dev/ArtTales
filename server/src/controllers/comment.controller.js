@@ -341,22 +341,37 @@ const deleteComment = asyncHandler(async (req, res) => {
 
     try {
         if (!isValidObjectId(commentId)) {
-            throw new ApiError(400, "Comment ID is required");
+            throw new ApiError(400, "Valid Comment ID is required");
         }
 
-        const comment = await Comment.findByIdAndDelete(commentId);
+        const comment = await Comment.findById(commentId);
 
-        const comments = await Comment.deleteMany({ comment: commentId });
-
-        if (!comment || !comments) {
-            throw new ApiError(400, "Failed to delete comment");
+        if (!comment) {
+            throw new ApiError(404, "Comment not found");
         }
 
-        return res.status(200).json(new ApiResponse(200, null, "Comment deleted successfully"));
+        if (comment.owner.toString() !== req.user._id.toString()) {
+            throw new ApiError(403, "You are not authorized to delete this comment");
+        }
+
+        const deleteNestedComments = async (parentCommentId) => {
+            const childComments = await Comment.find({ comment: parentCommentId });
+
+            for (const child of childComments) {
+                await deleteNestedComments(child._id);
+            }
+
+            await Comment.findByIdAndDelete(parentCommentId);
+        };
+
+        await deleteNestedComments(commentId);
+
+        return res.status(200).json(new ApiResponse(200, null, "Comment and its nested comments deleted successfully"));
     } catch (error) {
-        throw new ApiError(500, error.message);
+        throw new ApiError(500, error.message || "An error occurred while deleting the comment");
     }
 });
+
 
 export {
     getArtPostComments,
