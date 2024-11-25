@@ -37,10 +37,25 @@ function ArtPostModal() {
         });
     }
 
-    const handleLike = () => {
-        likeService.likeArtPost({ id }).catch((error) => {
+    const handleLike = async () => {
+        try {
+            setPostData((prevData) => ({
+                ...prevData,
+                isLiked: !prevData.isLiked,
+                likesCount: prevData.isLiked ? prevData.likesCount - 1 : prevData.likesCount + 1
+            }));
+            const like = await likeService.likeArtPost({ id });
+            if (like.status !== 200) {
+                console.log("ArtPostModal :: handleLike :: error :: ", like);
+                setPostData((prevData) => ({
+                    ...prevData,
+                    isLiked: !prevData.isLiked,
+                    likesCount: prevData.isLiked ? prevData.likesCount - 1 : prevData.likesCount + 1
+                }));
+            }
+        } catch (error) {
             console.log("ArtPostModal :: handleLike :: error :: ", error);
-        });
+        }
     };
 
     const measureDescriptionHeight = () => {

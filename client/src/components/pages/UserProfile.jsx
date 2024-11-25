@@ -38,6 +38,20 @@ function UserProfile() {
         navigate(`/user-profile/${username}`);
     };
 
+    const handleDeleteArtPost = (id) => {
+        artPostService.deleteArtPost({ id }).then((response) => {
+            if (response && response.status === 201) {
+                console.log("ArtPostCards :: handleDeleteArtPost :: response :: ", response);
+                setArtPosts((prevPosts) => prevPosts.filter((post) => post._id !== id));
+            }
+            else{
+                console.log("Could Not delete your post");
+            }
+        }).catch((error) => {
+            console.log("ArtPostCards :: handleDeleteArtPost :: error :: ", error);
+        });
+    };
+
     useEffect(() => {
         artPostService
             .getProfileArtPosts({ page: 1, limit: 10, query: '', username })
@@ -131,7 +145,7 @@ function UserProfile() {
             </div>
             <div className="userPosts">
                 {artPosts.map((post, index) => (
-                    <ArtPostCards key={post._id} {...post} index={index} onClick={() => handleCardClick(post)} />
+                    <ArtPostCards key={post._id} {...post} index={index} onClick={() => handleCardClick(post)} id={post._id} editable={editable} handleDeleteArtPost={handleDeleteArtPost}/>
                 ))}
             </div>
                 <div className='UserProfileOutlet'>

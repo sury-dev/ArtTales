@@ -93,6 +93,21 @@ export class ArtPostService {
             return error.response;
         }
     }
+
+    async deleteArtPost({id}){
+        try {
+            const postData = await axios.delete(`/api/art/delete-art-post/${id}`);
+            if(postData && postData.status === 201){
+                return postData;
+            }
+            else{
+                return postData;
+            }
+        } catch (error) {
+            console.log("Server :: PostService :: deleteArtPost :: error :: ", error);
+            return error.response;
+        }
+    }
 }
 
 const artPostService = new ArtPostService();

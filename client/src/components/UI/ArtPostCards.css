@@ -67,6 +67,17 @@
     justify-content: space-around;
     align-items: flex-end;
 }
+.edit{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    transform: translateY(-150%);
+}
 .viewContainer{
     display: flex;
     justify-content: space-between;
@@ -82,6 +93,32 @@
 
 .card .card-content {
     animation: slideDown 0.5s ease forwards;
+}
+
+.card:hover .edit {
+    animation: editSlideUp 0.5s ease forwards;
+}
+
+.card .edit {
+    animation: editSlideDown 0.5s ease forwards;
+}
+
+@keyframes editSlideUp {
+    0% {
+        transform: translateY(-150%);
+    }
+    100% {
+        transform: translateY(0%);
+    }
+}
+
+@keyframes editSlideDown {
+    0% {
+        transform: translateY(0%);
+    }
+    100% {
+        transform: translateY(-150%);
+    }
 }
 
 @keyframes slideUp {

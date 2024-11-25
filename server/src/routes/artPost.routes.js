@@ -13,7 +13,7 @@ router.route("/get-all-posts").get(verifyJWT, getAllArtPosts);
 router.route("/get-profile-art-posts/:username").get(verifyJWT, getProfileArtPosts);
 router.route("/update-art-post").patch(verifyJWT, updateArtPost);
 router.route("/update-publish-status").patch(verifyJWT, togglePublishArtPost);
-router.route("/delete-art-post").delete(verifyJWT, deleteArtPost);
+router.route("/delete-art-post/:id").delete(verifyJWT, deleteArtPost);
 router.route("/increment-view-count/:id").patch(verifyJWT, incrementViewCount);
 
 // router.route("/logout").post(verifyJWT ,logoutUser);

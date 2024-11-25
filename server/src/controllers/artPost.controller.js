@@ -4,7 +4,9 @@ import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from '../utils/cloudinary.js';
 import { User } from '../models/user.model.js';
+import { Comment } from '../models/comment.model.js';
 import { mongoose } from 'mongoose';
+import { deleteComment } from './comment.controller.js';
 
 const createArtPost = asyncHandler(async (req, res) => {
     try {
@@ -292,7 +294,8 @@ const updateArtPost = asyncHandler(async (req, res) => {
 });
 
 const deleteArtPost = asyncHandler(async (req, res) => {
-    const { _id } = req.body;
+    const { id } = req.params;
+    const _id = id;
 
     if (!mongoose.isValidObjectId(_id)) {
         throw new ApiError(400, "Not a valid ID");
@@ -304,7 +307,42 @@ const deleteArtPost = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Either the Art Post does not exist or you are not authorized to delete this Art Post");
     }
 
+    const artComments = await Comment.aggregate([
+        {
+            $match: {
+                artPost: new mongoose.Types.ObjectId(_id)
+            }
+        },
+        {
+            $project: {
+                _id: 1
+            }
+        }
+    ])
+
     const artPostDoc = await ArtPost.findByIdAndDelete(_id);
+
+
+    const deleteNestedComments = async (parentCommentId) => {
+        const childComments = await Comment.find({ comment: parentCommentId });
+
+        for (const child of childComments) {
+            await deleteNestedComments(child._id);
+        }
+
+        await Comment.findByIdAndDelete(parentCommentId);
+    };
+
+    
+    if (artComments.length > 0) {
+        artComments.forEach(async (comment) => {
+            await deleteNestedComments(comment._id);
+        });
+    }
+    else{
+        console.log("No comments to delete");
+    }
+
 
     return res
         .status(201)
