@@ -12,7 +12,7 @@
             "headers": [
                 {
                     "key": "Access-Control-Allow-Origin",
-                    "value": "https://arttales.vercel.app/"
+                    "value": "https://arttales.vercel.app"
                 },
                 {
                     "key": "Access-Control-Allow-Credentials",
@@ -29,11 +29,6 @@
             ]
         }
     ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/index.html",
-            "status": 200
-        }
-    ]
+    "cleanUrls": true,
+    "trailingSlash": false
 }
