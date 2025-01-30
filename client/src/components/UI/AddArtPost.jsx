@@ -36,7 +36,7 @@ function AddArtPost() {
         } catch (error) {
             setError("Something went wrong while posting your art")
         }
-    }
+    };
 
     return (
         <form className='addArtPostForm bg-black' onSubmit={handleSubmit(postArt)}>
