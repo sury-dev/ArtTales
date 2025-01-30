@@ -3,6 +3,10 @@
         {
             "source": "/api/(.*)",
             "destination": "https://art-tales.vercel.app/api/$1"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ],
     "redirects": [],
