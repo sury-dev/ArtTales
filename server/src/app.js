@@ -28,7 +28,7 @@ app.get("*", (req, res, next) => {
   if (req.url.startsWith("/api") || req.url.endsWith(".js") || req.url.endsWith(".css")) {
     return next();
   }
-  res.sendFile(path.join(__dirname, "public", "index.html"));  // Serve from the 'public' folder
+  res.sendFile(path.join(__dirname,"..", "public", "index.html"));  // Serve from the 'public' folder
 });
 
 // ✅ Debugging: Verify frontend path
