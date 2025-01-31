@@ -24,12 +24,6 @@ app.use(
 );
 
 // ✅ Serve `index.html` for non-API routes from the public folder
-app.get("*", (req, res, next) => {
-  if (req.url.startsWith("/api") || req.url.endsWith(".js") || req.url.endsWith(".css")) {
-    return next();
-  }
-  res.sendFile(path.join(__dirname,"..", "public", "index.html"));  // Serve from the 'public' folder
-});
 
 // ✅ Debugging: Verify frontend path
 console.log("Serving frontend from:", path.join(__dirname, "public"));
@@ -51,4 +45,10 @@ app.use("/api/comments", commentRouter);
 app.use("/api/talebooks", taleBookRouter);
 app.use("/api/follow", followRouter);
 
+app.get("*", (req, res, next) => {
+  if (req.url.startsWith("/api") || req.url.endsWith(".js") || req.url.endsWith(".css")) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname,"..", "public", "index.html"));  // Serve from the 'public' folder
+});
 export { app };
