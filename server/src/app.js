@@ -12,7 +12,7 @@ const app = express();
 
 app.use(express.json({ limit: "16kb" }));
 app.use(urlencoded({ extended: true, limit: "16kb" }));
-app.use(express.static("public"));
+app.use(express.static("public"));  // Serve static files from the 'public' folder
 app.use(cookieParser());
 
 app.use(
@@ -23,17 +23,16 @@ app.use(
   })
 );
 
-// ✅ Serve frontend build files
-const frontendPath = path.join(__dirname, "../../client/dist");
-app.use(express.static(frontendPath));
-
-// ✅ Serve `index.html` for non-API routes
+// ✅ Serve `index.html` for non-API routes from the public folder
 app.get("*", (req, res, next) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
+  if (req.url.startsWith("/api") || req.url.endsWith(".js") || req.url.endsWith(".css")) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, "public", "index.html"));  // Serve from the 'public' folder
 });
 
 // ✅ Debugging: Verify frontend path
-console.log("Serving frontend from:", frontendPath);
+console.log("Serving frontend from:", path.join(__dirname, "public"));
 
 // ✅ Routes
 import userRouter from "./routes/user.routes.js";
