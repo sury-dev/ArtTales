@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon -r dotenv/config --experimental-json-modules server/src/index.js",
     "dev": "nodemon -r dotenv/config --experimental-json-modules server/src/index.js",
-    "install": "node install.js"
+    "install": "node install.js",
+    "build" : "node build.js"
   },
   "author": "",
   "license": "ISC",
