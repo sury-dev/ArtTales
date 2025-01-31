@@ -29,9 +29,6 @@ app.use(express.static(frontendPath));
 
 // ✅ Serve `index.html` for non-API routes
 app.get("*", (req, res, next) => {
-  if (req.url.startsWith("/api") || req.url.endsWith(".js") || req.url.endsWith(".css")) {
-    return next();
-  }
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
