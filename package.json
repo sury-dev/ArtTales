@@ -4,9 +4,11 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
-    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
-    "prod": "node src/index.js"
+    "start": "nodemon -r dotenv/config --experimental-json-modules server/src/index.js",
+    "dev": "nodemon -r dotenv/config --experimental-json-modules server/src/index.js",
+    "build": "npm run build --prefix client",
+    "prod": "node src/index.js",
+    "install": "npm install --prefix client && npm install"
   },
   "author": "",
   "license": "ISC",
