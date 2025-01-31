@@ -45,8 +45,16 @@ app.use("/api/comments", commentRouter);
 app.use("/api/talebooks", taleBookRouter);
 app.use("/api/follow", followRouter);
 
+app.use((req, res, next) => {
+  if (req.url.endsWith('.css')) {
+    res.setHeader('Content-Type', 'text/css');
+  }
+  next();
+});
+
+
 app.get("*", (req, res, next) => {
-  if (req.url.startsWith("/api") || req.url.endsWith(".js") || req.url.endsWith(".css")) {
+  if (req.url.startsWith("/api") || req.url.endsWith(".js")) {
     return next();
   }
   res.sendFile(path.join(__dirname,"..", "public", "index.html"));  // Serve from the 'public' folder
