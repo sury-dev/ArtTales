@@ -10,7 +10,7 @@ function Explore() {
     const [selectedPost, setSelectedPost] = useState(null)
     const navigate = useNavigate()
     useEffect(()=>{
-        artPostService.getAllArtPosts({page: 1, limit: 10, query: ''})
+        artPostService.getAllArtPosts({page: 1, limit: 100, query: ''})
             .then((postData) => {
                 if(postData && postData.status === 200){
                     setArtPosts(postData.data.data)

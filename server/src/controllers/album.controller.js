@@ -10,40 +10,45 @@ import { Album } from '../models/album.model.js';
 const createAlbum = asyncHandler(async (req, res) => {
     try {
         const { title, description } = req.body;
-    
+
         if (title?.trim() === "" || !title) {
             throw new ApiError(400, "Title is required.");
         }
-    
+
         const albumExists = await Album.findOne({ title });
-    
+
         if (albumExists) {
             throw new ApiError(400, "Album with this title already exists");
         }
-    
-        let albumCoverLocalPath;
-    
-        if(req.file?.path){
-            albumCoverLocalPath = req.file.path;
-        }
         const userId = req.user._id;
-    
-        const albumFile = (await uploadOnCloudinary(albumCoverLocalPath))?.url;
-    
+
+        if (!req.file?.buffer) {
+            throw new ApiError(400, "No Album Cover was uploaded to the server");
+        }
+
+        const uploadedAlbumCover = await uploadOnCloudinary(req.file.buffer, "album");
+
+        if (!uploadedAlbumCover?.secure_url) {
+            throw new ApiError(400, "Album Cover was not uploaded to Cloudinary");
+        }
+
+        const albumFile = uploadedAlbumCover.secure_url;
+
+
         const album = new Album({
             title,
-            description : description || "",
-            thumbnail : albumFile || "",
+            description: description || "",
+            thumbnail: albumFile || "",
             owner: userId
         });
-    
+
         const albumDoc = await album.save();
-    
+
         return res
-        .status(201)
-        .json(
-            new ApiResponse(201, albumDoc, "Album created successfully")
-        )
+            .status(201)
+            .json(
+                new ApiResponse(201, albumDoc, "Album created successfully")
+            )
     } catch (error) {
         throw new ApiError(500, "Something went wrong while creating the album");
     }
@@ -53,16 +58,16 @@ const deleteAlbum = asyncHandler(async (req, res) => {
     try {
         const { albumId } = req.params;
 
-        if(!mongoose.isValidObjectId(albumId)){
+        if (!mongoose.isValidObjectId(albumId)) {
             throw new ApiError(400, "Invalid album ID");
         }
 
         const album = await Album.findByIdAndDelete(albumId);
 
         return res.status(200)
-        .json(
-            new ApiResponse(200, album, "Album deleted successfully")
-        )
+            .json(
+                new ApiResponse(200, album, "Album deleted successfully")
+            )
     } catch (error) {
         throw new ApiError(500, "Something went wrong while deleting the album");
     }
@@ -72,13 +77,13 @@ const updateAlbum = asyncHandler(async (req, res) => {
     try {
         const { albumId } = req.params;
 
-        if(!mongoose.isValidObjectId(albumId)){
+        if (!mongoose.isValidObjectId(albumId)) {
             throw new ApiError(400, "Invalid album ID");
         }
 
         const album = await Album.findById(albumId);
 
-        if(!album){
+        if (!album) {
             throw new ApiError(404, "Album not found");
         }
 
@@ -90,7 +95,7 @@ const updateAlbum = asyncHandler(async (req, res) => {
 
         let albumCoverLocalPath;
 
-        if(req.file?.path){
+        if (req.file?.path) {
             albumCoverLocalPath = req.file.path;
         }
 
@@ -103,10 +108,10 @@ const updateAlbum = asyncHandler(async (req, res) => {
         const updatedAlbum = await album.save();
 
         return res
-        .status(200)
-        .json(
-            new ApiResponse(200, updatedAlbum, "Album updated successfully")
-        )
+            .status(200)
+            .json(
+                new ApiResponse(200, updatedAlbum, "Album updated successfully")
+            )
     } catch (error) {
         throw new ApiError(500, `Something went wrong while updating the album || EROR: ${error.message}`);
     }
@@ -128,7 +133,7 @@ const getAlbum = asyncHandler(async (req, res) => {
                 foreignField: '_id', // Field in ArtPost to match with Album artPost IDs
                 as: 'artPosts', // Alias for the data from ArtPost collection
                 pipeline: [
-                    {$match : { isPublished : true }},
+                    { $match: { isPublished: true } },
                     {
                         $lookup: {
                             from: 'likes', // Collection for likes
@@ -217,7 +222,7 @@ const getAlbum = asyncHandler(async (req, res) => {
             }
         }
     ]);
-    
+
 
     if (!album || album.length === 0) {
         throw new ApiError(404, "Album not found");
@@ -231,23 +236,23 @@ const getAlbum = asyncHandler(async (req, res) => {
 const addArtPostToAlbum = asyncHandler(async (req, res) => {
     const { albumId, artPostId } = req.params;
 
-    if(!mongoose.isValidObjectId(albumId) || !mongoose.isValidObjectId(artPostId)){
+    if (!mongoose.isValidObjectId(albumId) || !mongoose.isValidObjectId(artPostId)) {
         throw new ApiError(400, "Invalid album or art post ID");
     }
 
     const album = await Album.findById(albumId);
 
-    if(!album){
+    if (!album) {
         throw new ApiError(404, "Album not found");
     }
 
     const artPost = await ArtPost.findById(artPostId);
 
-    if(!artPost){
+    if (!artPost) {
         throw new ApiError(404, "Art Post not found");
     }
 
-    if(album.owner.toString() !== req.user._id.toString()){
+    if (album.owner.toString() !== req.user._id.toString()) {
         throw new ApiError(403, "You are not authorized to add art post to this album");
     }
 
@@ -256,15 +261,15 @@ const addArtPostToAlbum = asyncHandler(async (req, res) => {
     const updatedAlbum = await album.save();
 
     return res.status(200)
-    .json(
-        new ApiResponse(200, updatedAlbum, "Art Post added to Album successfully")
-    )
+        .json(
+            new ApiResponse(200, updatedAlbum, "Art Post added to Album successfully")
+        )
 });
 
 const getUsersAlbums = asyncHandler(async (req, res) => {
     const { userId } = req.params;
 
-    if(!mongoose.isValidObjectId(userId)){
+    if (!mongoose.isValidObjectId(userId)) {
         throw new ApiError(400, "Invalid user ID");
     }
 
@@ -377,23 +382,23 @@ const getUsersAlbums = asyncHandler(async (req, res) => {
 const removeArtPostFromAlbum = asyncHandler(async (req, res) => {
     const { albumId, artPostId } = req.params;
 
-    if(!mongoose.isValidObjectId(albumId) || !mongoose.isValidObjectId(artPostId)){
+    if (!mongoose.isValidObjectId(albumId) || !mongoose.isValidObjectId(artPostId)) {
         throw new ApiError(400, "Invalid album or art post ID");
     }
 
     const album = await Album.findById(albumId);
 
-    if(album.owner.toString() !== req.user._id.toString()){
+    if (album.owner.toString() !== req.user._id.toString()) {
         throw new ApiError(403, "You are not authorized to remove art post from this album");
     }
 
-    if(!album){
+    if (!album) {
         throw new ApiError(404, "Album not found");
     }
 
     const artPost = await ArtPost.findById(artPostId);
 
-    if(!artPost){
+    if (!artPost) {
         throw new ApiError(404, "Art Post not found");
     }
 
@@ -402,9 +407,9 @@ const removeArtPostFromAlbum = asyncHandler(async (req, res) => {
     const updatedAlbum = await album.save();
 
     return res.status(200)
-    .json(
-        new ApiResponse(200, updatedAlbum, "Art Post removed from Album successfully")
-    )
+        .json(
+            new ApiResponse(200, updatedAlbum, "Art Post removed from Album successfully")
+        )
 });
 
 export { createAlbum, deleteAlbum, updateAlbum, addArtPostToAlbum, getAlbum, getUsersAlbums, removeArtPostFromAlbum };

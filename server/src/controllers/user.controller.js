@@ -70,22 +70,20 @@ const registerUser = asyncHandler(async (req, res) => {
     //const avatarLocalPath = req.files?.avatar[0]?.path; //since we already used multer 
     //const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
-    let avatarLocalPath;
-    if (req.files && Array.isArray(req.files.avatar) && req.files.avatar.length > 0) {
-        avatarLocalPath = req.files.avatar[0].path;
-    }
+    let avatar, coverImage;
 
-    let coverImageLocalPath;
-    if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
-        coverImageLocalPath = req.files.coverImage[0].path;
-    }
-
-    if (!avatarLocalPath) {
+    // Handle avatar upload
+    if (req.files && req.files.avatar && req.files.avatar[0] && req.files.avatar[0].buffer) {
+        avatar = await uploadOnCloudinary(req.files.avatar[0].buffer, "avatar");
+    } else {
         throw new ApiError(400, "Profile Picture is required.");
     }
 
-    const avatar = await uploadOnCloudinary(avatarLocalPath);
-    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+    // Handle cover image upload (optional)
+    if (req.files && req.files.coverImage && req.files.coverImage[0] && req.files.coverImage[0].buffer) {
+        coverImage = await uploadOnCloudinary(req.files.coverImage[0].buffer, "coverImage");
+    }
+
 
     if (!avatar) {
         throw new ApiError(400, "Avatar file not uploaded on cloudinary.");
@@ -301,24 +299,19 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 })
 
 const updateUserAvatar = asyncHandler(async (req, res) => {
-    let newAvatarLocalPath;
-    if (req.file?.path) {
-        newAvatarLocalPath = req.file.path;
-    }
-
-    if (!newAvatarLocalPath) {
+    if (!req.file?.buffer) {
         throw new ApiError(400, "New Avatar file is required.");
     }
 
-    const newAvatar = await uploadOnCloudinary(newAvatarLocalPath);
+    const newAvatar = await uploadOnCloudinary(req.file.buffer, "avatar");
 
-    if (!newAvatar?.url) {
-        throw new ApiError(400, "New Avatar file not uploaded on cloudinary.");
+    if (!newAvatar?.secure_url) {
+        throw new ApiError(400, "New Avatar file not uploaded on Cloudinary.");
     }
 
     const user = await User.findByIdAndUpdate(
         req.user?._id,
-        { $set: { avatar: newAvatar.url } },
+        { $set: { avatar: newAvatar.secure_url } },
         { new: true }
     ).select("-password -refreshToken");
 
@@ -332,24 +325,19 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 const updateCoverImage = asyncHandler(async (req, res) => {
-    let newCoverImagePath;
-    if (req.file?.path) {
-        newCoverImagePath = req.file.path;
-    }
-
-    if (!newCoverImagePath) {
+    if (!req.file?.buffer) {
         throw new ApiError(400, "New Cover Image file is required.");
     }
 
-    const newCoverImage = await uploadOnCloudinary(newCoverImagePath);
+    const newCoverImage = await uploadOnCloudinary(req.file.buffer, "coverImage");
 
-    if (!newCoverImage?.url) {
-        throw new ApiError(400, "New Cover Image file not uploaded on cloudinary.");
+    if (!newCoverImage?.secure_url) {
+        throw new ApiError(400, "New Cover Image file not uploaded on Cloudinary.");
     }
 
     const user = await User.findByIdAndUpdate(
         req.user?._id,
-        { $set: { coverImage: newCoverImage.url } },
+        { $set: { coverImage: newCoverImage.secure_url } },
         { new: true }
     ).select("-password -refreshToken");
 
@@ -361,6 +349,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
         new ApiResponse(200, user, "New Cover Image updated successfully")
     );
 });
+
 
 const getUserProfile = asyncHandler(async (req, res) => {
     const { username } = req.params;
@@ -462,7 +451,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
             },
         },
     ]);
-    
+
 
     if (!profile?.length) {
         throw new ApiError(404, "Profile does not exist");

@@ -12,18 +12,20 @@ const createArtPost = asyncHandler(async (req, res) => {
     try {
         const { title = "", description = "", isPublished } = req.body;
 
-        let artFileLocalPath;
-
-        if (req.file?.path) {
-            artFileLocalPath = req.file.path;
-        }
         const userId = req.user._id;
 
-        if (!artFileLocalPath) {
+        if (!req.file?.buffer) {
             throw new ApiError(400, "No Picture was uploaded to the server");
         }
 
-        const artFile = (await uploadOnCloudinary(artFileLocalPath)).url;
+        const uploadedArt = await uploadOnCloudinary(req.file.buffer, "art");
+
+        if (!uploadedArt?.secure_url) {
+            throw new ApiError(400, "Art file was not uploaded to Cloudinary");
+        }
+
+        const artFile = uploadedArt.secure_url;
+
 
         const artPost = new ArtPost({
             title,
@@ -333,13 +335,13 @@ const deleteArtPost = asyncHandler(async (req, res) => {
         await Comment.findByIdAndDelete(parentCommentId);
     };
 
-    
+
     if (artComments.length > 0) {
         artComments.forEach(async (comment) => {
             await deleteNestedComments(comment._id);
         });
     }
-    else{
+    else {
         console.log("No comments to delete");
     }
 

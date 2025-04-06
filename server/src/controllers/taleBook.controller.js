@@ -15,7 +15,7 @@ const createTalebook = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Title is required.");
         }
     
-        const talebookExists = await Talebook.findOne({ title });
+        const talebookExists = await TaleBook.findOne({ title });
     
         if (talebookExists) {
             throw new ApiError(400, "Talebook with this title already exists");
@@ -30,7 +30,7 @@ const createTalebook = asyncHandler(async (req, res) => {
     
         const talebookFile = (await uploadOnCloudinary(talebookCoverLocalPath))?.url;
     
-        const talebook = new Talebook({
+        const talebook = new TaleBook({
             title,
             description : description || "",
             thumbnail : talebookFile || "",
@@ -76,7 +76,7 @@ const updateTalebook = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Invalid talebook ID");
         }
 
-        const talebook = await Talebook.findById(talebookId);
+        const talebook = await TaleBook.findById(talebookId);
 
         if(!talebook){
             throw new ApiError(404, "Talebook not found");

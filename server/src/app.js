@@ -2,31 +2,34 @@ import express, { urlencoded } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const app = express();
 
-app.use(express.json({ limit: "16kb" }));
-app.use(urlencoded({ extended: true, limit: "16kb" }));
-app.use(express.static("public"));  // Serve static files from the 'public' folder
+app.use(express.json({limit : "16kb"}));
+
+app.use(urlencoded({extended: true, limit : "16kb"}));
+
+app.use(express.static("public"));
+
 app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: ["https://arttales.vercel.app", "http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    credentials: true,
-  })
-);
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://art-tales.vercel.app'
+];
 
-// ✅ Serve `index.html` for non-API routes from the public folder
-
-// ✅ Debugging: Verify frontend path
-console.log("Serving frontend from:", path.join(__dirname, "public"));
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Allowed headers
+    credentials: true // Allow cookies and authentication headers
+}));
 
 // ✅ Routes
 import userRouter from "./routes/user.routes.js";
@@ -45,18 +48,4 @@ app.use("/api/comments", commentRouter);
 app.use("/api/talebooks", taleBookRouter);
 app.use("/api/follow", followRouter);
 
-app.use((req, res, next) => {
-  if (req.url.endsWith('.css')) {
-    res.setHeader('Content-Type', 'text/css');
-  }
-  next();
-});
-
-
-app.get("*", (req, res, next) => {
-  if (req.url.startsWith("/api") || req.url.endsWith(".js")) {
-    return next();
-  }
-  res.sendFile(path.join(__dirname,"..", "public", "index.html"));  // Serve from the 'public' folder
-});
 export { app };

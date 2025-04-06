@@ -13,7 +13,7 @@ function LogoutBtn() {
             .then((response) => {
                 if (response.status === 200) {
                     dispatch(logout())
-                    navigate('/auth/login') 
+                    navigate('/auth/login')
                 }
             })
             .catch((error) => {
@@ -22,12 +22,29 @@ function LogoutBtn() {
     }
 
     return (
-        <button 
-            onClick={handleLogout} 
-            className='bg-transparent text-white px-5 py-2 rounded-xl hover:bg-white hover:text-black duration-200 inline-block'
+        <button
+            onClick={handleLogout}
+            style={{
+                backgroundColor: 'transparent',
+                color: 'white',
+                padding: '0.5rem 1.25rem',
+                borderRadius: '0.75rem',
+                transition: 'all 0.2s ease-in-out',
+                display: 'inline-block',
+                cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+                e.target.style.backgroundColor = 'white';
+                e.target.style.color = 'black';
+            }}
+            onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'transparent';
+                e.target.style.color = 'white';
+            }}
         >
             Logout
         </button>
+
     )
 }
 

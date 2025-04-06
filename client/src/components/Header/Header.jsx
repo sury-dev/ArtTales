@@ -31,7 +31,7 @@ function Header() {
             <ul className=''>
                 {navItemsMid.map((item) => (
                     item.active && (
-                        <li key={item.name} className='inline-block mx-2'>
+                        <li key={item.name} className='inline-block mx-2' style={{margin : '0 16px'}}>
                             <NavLink 
                                 to={item.path} 
                                 className={({ isActive }) => (isActive ? 'navBtns active' : 'navBtns')}
@@ -45,7 +45,7 @@ function Header() {
             <ul className=''>
                 {navItemsEnd.map((item) => (
                     item.active && (
-                        <li key={item.name} className='inline-block mx-2'>
+                        <li key={item.name} className='inline-block mx-2' style={{margin : '0 16px'}}>
                             <NavLink 
                                 to={item.path} 
                                 className={({ isActive }) => (isActive ? 'authBtns active' : 'navBtns')}
@@ -55,10 +55,10 @@ function Header() {
                         </li>
                     )
                 ))}
-                <li  className='inline-block mx-2'>
+                <li  className='inline-block mx-2' style={{marginLeft: 'auto'}}>
                     {authStatus && <CreatePostBtn />}
                 </li>
-                <li className='ml-4'>
+                <li className='ml-2' style={{marginLeft: '16px'}}>
                     {authStatus && <ProfileButton />}
                 </li>
             </ul>
