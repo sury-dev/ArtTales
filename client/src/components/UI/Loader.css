@@ -1,0 +1,42 @@
+.orbit-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.orbit-spinner {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    animation: orbit-spin 1s linear infinite;
+    box-sizing: border-box;
+}
+
+.orbit-inner-spinner {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    animation: orbit-spin-reverse 1.5s linear infinite;
+    box-sizing: border-box;
+}
+
+@keyframes orbit-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes orbit-spin-reverse {
+    0% {
+        transform: rotate(360deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}

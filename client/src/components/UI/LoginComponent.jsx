@@ -4,20 +4,23 @@ import { login as authLogin } from '../../app/slices/authSlice.js'
 import { Input } from '../index.js'
 import { useDispatch } from 'react-redux'
 import userService from '../../server/userService.js'
-import { useForm } from 'react-hook-form'
+import { set, useForm } from 'react-hook-form'
 import './LoginComponent.css'
 import WhiteMail from '../../assets/WhiteMail.webp'
 import WhiteUser from '../../assets/WhiteUser.webp'
+import Loader from './Loader.jsx'
 
 function LoginComponent() {
     const [error, setError] = useState('') // State for managing error messages
     const { register, handleSubmit } = useForm() // Hook form for form handling
     const dispatch = useDispatch() // Redux dispatch function to trigger actions
     const navigate = useNavigate() // React Router hook for navigation
+    const [isLoading, setIsLoading] = useState(false) // State for managing loading state
 
     // Function to handle the login process
     const login = async (data) => {
         setError('') // Clear previous error messages
+        setIsLoading(true) // Set loading state to true
         try {
             const { username, email, password } = data // Destructure the input data
 
@@ -44,6 +47,7 @@ function LoginComponent() {
             // Check if the response is successful (status 200)
             if (response && response.status === 200) {
                 dispatch(authLogin({ userData: response.data.data.user })) // Dispatch login action with user data
+                setIsLoading(false) // Set loading state to false
                 navigate('/')  // Navigate to home page after successful login
             } else {
                 // Handle different error responses based on status code
@@ -60,6 +64,7 @@ function LoginComponent() {
             }
         } catch (error) {
             // Catch any errors during the login process
+            setIsLoading(false) // Set loading state to false
             setError(error.message || 'An error occurred during login')
         }
     }
@@ -103,6 +108,10 @@ function LoginComponent() {
 
             {/* Display error message if any */}
             <p className="text-red-500">{error}</p>
+
+            {
+                !isLoading && <Loader size={40}/>
+            }
 
             {/* Submit button */}
             <button className='LoginButton' type="submit">

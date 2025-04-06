@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom'
 import { Input } from '../index.js'
 import artPostService from '../../server/artPostService.js'
 import './AddArtPost.css'
+import Loader from './Loader.jsx'
 
 function AddArtPost() {
     const navigate = useNavigate()
     const [error, setError] = useState("")
     const [image, setImage] = useState(null);
-    const { register, handleSubmit, getValues } = useForm()
+    const { register, handleSubmit, getValues } = useForm();
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleImageUpload = async (e) => {
         setError("")
@@ -20,6 +22,7 @@ function AddArtPost() {
 
     const postArt = async (data) => {
         setError("")
+        setIsLoading(true);
         try {
             const obj = { ...data, artFile: image }
             if (!obj.artFile) {
@@ -29,11 +32,14 @@ function AddArtPost() {
             const response = await artPostService.postArt({ ...obj })
 
             if (response && response.status === 201) {
+                setIsLoading(false)
                 navigate('/')
             } else {
+                setIsLoading(false)
                 setError("Server responded with an error code " + response.status)
             }
         } catch (error) {
+            setIsLoading(false);
             setError("Something went wrong while posting your art")
         }
     };
@@ -63,6 +69,7 @@ function AddArtPost() {
                     </div>
                     <div className="error">{error}</div>
                 </div>
+                {isLoading && <Loader />}
                 <button type="submit">Post</button>
             </div>
             <div className="lightSource3"></div>
