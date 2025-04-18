@@ -109,8 +109,10 @@ function LoginComponent() {
             {/* Display error message if any */}
             <p className="text-red-500">{error}</p>
 
+            {/* <LoaderOrbiter /> */}
+
             {
-                !isLoading && <Loader size={40}/>
+                isLoading && <Loader size={40}/>
             }
 
             {/* Submit button */}
