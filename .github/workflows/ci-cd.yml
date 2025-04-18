@@ -35,7 +35,7 @@ jobs:
 
       - name: 🧱 Build and push frontend image
         uses: docker/build-push-action@v6
-        with:
+        with: 
           context: ./client
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/arttales-frontend:latest
