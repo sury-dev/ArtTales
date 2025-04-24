@@ -40,17 +40,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        always {
-            echo '🧹 Cleaning up containers...'
-            bat 'docker-compose down'
-        }
-        failure {
-            echo '🚨 Build or deploy failed.'
-        }
-        success {
-            echo '✅ Application built and run successfully!'
-        }
-    }
 }
