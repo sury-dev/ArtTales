@@ -4,7 +4,6 @@ WORKDIR /app
 
 COPY package*.json ./
 
-# Install inside container (important!)
 RUN npm install
 
 COPY . .

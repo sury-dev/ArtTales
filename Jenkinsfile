@@ -22,7 +22,7 @@ pipeline {
 
         stage('🚀 Run Application') {
             steps {
-                echo 'Running the MERN stack services...'
+                echo 'Running the MERN stack services...' 
                 bat 'docker-compose up -d'
             }
         }
@@ -41,3 +41,4 @@ pipeline {
         }
     }
 }
+
