@@ -29,7 +29,7 @@ pipeline {
 
         stage('✅ Health Check') {
             steps {
-                echo 'Checking if services are running...'
+                echo 'Checking if services are running.....'
                 bat 'docker ps'
             }
         }
