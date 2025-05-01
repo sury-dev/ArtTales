@@ -4,7 +4,7 @@ import './Logo.css'
 function Logo({width = "100px"}) {
     return (
         <div>
-            <h1 className='logo'>ART TALES</h1>
+            <h1 className='logo'>Art Tales</h1>
         </div>
     )
 }
